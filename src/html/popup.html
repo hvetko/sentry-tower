@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	<link rel="stylesheet" href="../css/style.css" type="text/css">
+	<link rel="stylesheet" href="../css/popup.css" type="text/css">
+</head>
+<body>
+<div id="popup">
+	<section>
+		<h2>Watchlist</h2>
+		<div id="loader"><img src="../img/loading.gif"/></div>
+		<ul id="watchlist">
+		</ul>
+	</section>
+</div>
+
+<ul id="list-template">
+	<li id="list-template-item">
+		<span class="count unseen-count"></span>
+		<span class="count seen-count"></span>
+		<span class="query"></span>
+	</li>
+</ul>
+
+<script src="../js/jquery-3.1.0.min.js"></script>
+<script src="../js/sentry-tower.js"></script>
+<script src="../js/popup.js"></script>
+</body>
+</html>

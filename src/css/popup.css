@@ -1,0 +1,34 @@
+#popup {
+	width: 400px;
+	margin: auto;
+	padding: 15px;
+}
+#watchlist {
+	font-size: 75%;
+	list-style: none;
+}
+
+#list-template {
+	display: none;
+}
+
+.count {
+	display: inline-block;
+	width: 21px;
+	height: 12px;
+	padding: 1px;
+}
+
+.unseen-count {
+	background: #ffecec;
+	border: 1px solid #f8cbcb;
+}
+
+.seen-count {
+	background: #eaffea;
+	border: 1px solid #a6f3a6;
+}
+
+.query {
+	display: inline-block;
+}
