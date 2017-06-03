@@ -1,0 +1,83 @@
+h1 {
+	font-size: 200%;
+}
+
+footer {
+	border-top: 1px solid #999999;
+	padding: 20px;
+	text-align: right;
+	color: #8c8c8c;
+	font-size: 75%;
+}
+
+#update-msg-rounder {
+	min-height: 20px;
+}
+
+#options {
+	width: 600px;
+	margin: auto;
+	padding: 20px 10px;
+
+}
+
+input, textarea {
+	border: 1px solid #999999;
+	padding: 5px;
+	font-size: 75%;
+	width: 98%;
+	border-radius: 2px;
+}
+
+textarea {
+	min-height: 150px;
+}
+
+label {
+	display: block;
+	color: #666666;
+	padding-bottom: 5px;
+}
+
+section {
+	margin: 20px 0;
+}
+
+p {
+	margin: 10px 0;
+}
+
+.action {
+	cursor: pointer;
+}
+
+.adder {
+	border: 1px solid #f2f2f2;
+	padding: 10px 15px;
+}
+
+.action {
+	padding: 2px 5px;
+	border: 1px solid;
+	border-radius: 3px;
+}
+
+.action-flat {
+	background-color: #f2f2f2;
+	border-color: #999999;
+}
+
+.action-raised {
+	background-color: #1a5062;
+	border-color: #1a5062;
+	color: #ffffff;
+}
+
+.action-big {
+	padding: 5px 10px;
+	font-size: 100%;
+}
+
+.options-divider{
+	padding-bottom: 10px;
+}

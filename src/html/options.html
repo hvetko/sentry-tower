@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Sentry Tower</title>
+	<link rel="stylesheet" href="../css/style.css" type="text/css">
+	<link rel="stylesheet" href="../css/options.css" type="text/css">
+</head>
+<body>
+<div id="options">
+	<h1>Tower</h1>
+
+	<div id="update-msg-rounder">
+		<div id="update-msg" style="display: none"></div>
+	</div>
+
+	<div class="options-divider">
+		<p>Save your Sentry settings and queries you want to monitor.</p>
+
+		<p>To see instructions on how to set up Sentry Tower <span data-related="docs"
+																   class="opener action action-flat">click here</span>.
+		</p>
+
+		<blockquote id="docs" style="display: none">
+			<h2>Docs</h2>
+			<p><strong>Sentry API Key</strong> - </p>
+			<p>Updated and, possibly, more detailed documentation can be found on the <strong><a href="#"
+																								 target="_blank">GitHub
+				page</a></strong>.</p>
+			<p><span class="action action-flat closer" data-related="docs">Close Docs</span></p>
+		</blockquote>
+	</div>
+
+	<div class="options-divider">
+		<section>
+			<label for="sentry-api-token">Sentry API Token</label>
+			<input type="text" id="sentry-api-token" placeholder="Sentry API Token"/>
+		</section>
+
+		<section>
+			<label for="sentry-url">Sentry URL</label>
+			<input type="text" id="sentry-url" placeholder="Sentry URL"/>
+		</section>
+
+		<section>
+			<label for="sentry-check-interval">Check interval</label>
+			<input type="number" id="sentry-check-interval" placeholder="Check interval"/>
+		</section>
+
+		<section>
+			<label>Projects</label>
+			<ul></ul>
+			<div>
+				<p><span class="action action-flat opener" data-related="new-project">Add New Project</span></p>
+				<div class="adder" id="new-project" style="display: none">
+					<section>
+						<label for="sentry-project">Project URl shortcode</label>
+						<input type="text" id="sentry-project"/>
+					</section>
+
+					<span class="action action-raised" data-related="new-project" id="new-project-save">Save</span>
+					<span class="action action-flat closer" data-related="new-project">Cancel</span>
+				</div>
+			</div>
+		</section>
+
+		<section>
+			<label>Queries</label>
+			<ul></ul>
+			<div>
+				<p><span class="action action-flat opener" data-related="new-query">Add New Query</span></p>
+				<div class="adder" id="new-query" style="display: none">
+					<section>
+						<label for="sentry-query-project">Project</label>
+						<select id="sentry-query-project">
+							<option value="Internet Explorer">sd</option>
+							<option value="Firefox">wewer</option>
+							<option value="Chrome">fsdf</option>
+							<option value="Opera">fsdfsdf</option>
+							<option value="Safari">sdf</option>
+						</select>
+					</section>
+
+					<section>
+						<label for="sentry-query-query">Query</label>
+						<input type="text" id="sentry-query-query"/>
+					</section>
+
+					<section>
+						<label for="sentry-query-status">Status</label>
+						<select id="sentry-query-status">
+							<option value="unresolved">Unresolved</option>
+							<option value="resolved">Resolved</option>
+							<option value="muted">Muted</option>
+							<option value="assigned">Assigned</option>
+							<option value="unassigned">Unassigned</option>
+						</select>
+					</section>
+
+					<span class="action action-raised" data-related="new-query">Save</span>
+					<span class="action action-flat closer" data-related="new-query">Cancel</span>
+				</div>
+			</div>
+		</section>
+
+
+	</div>
+
+	<div class="options-divider">
+		<button id="save" class="action action-raised action-big">Save</button>
+	</div>
+
+</div>
+<footer>
+	Sentry Tower is <a href="#" target="_blank">open source</a>.
+</footer>
+<script src="../js/jquery-3.1.0.min.js"></script>
+<script src="../js/sentry-tower.js"></script>
+<script src="../js/options.js"></script>
+</body>
+</html>

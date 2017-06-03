@@ -15,19 +15,17 @@ SentryTower.backgroundHandler = {
 	},
 
 	updateBadge: function () {
-		this.storage.storage.get('results', function (results) {
-			var unreadCount = 0;
-			var readCount = 0;
-
-			$.each(results.results, function (query, result) {
-				unreadCount += result.unreadCount;
-				readCount += (result.count - result.unreadCount);
-			});
-
-			if (unreadCount > 0) {
-				chrome.browserAction.setBadgeText({text: unreadCount.toString()});
+		this.storage.storage.get('unreadIds', function (results) {
+			if (results.unreadIds.length > 0) {
+				chrome.browserAction.setBadgeText({text: results.unreadIds.length.toString()});
 				chrome.browserAction.setBadgeBackgroundColor({color: 'red'});
 			} else {
+				var readCount = 0;
+
+				$.each(results.results, function (query, result) {
+					readCount += (result.count - result.unreadCount);
+				});
+
 				chrome.browserAction.setBadgeText({text: readCount.toString()});
 				chrome.browserAction.setBadgeBackgroundColor({color: 'blue'});
 			}
@@ -50,5 +48,5 @@ $(document).ready(function () {
 
 	runSentryTower();
 
-	window.setInterval(runSentryTower, 10000);
+	window.setInterval(runSentryTower, 100000);
 });

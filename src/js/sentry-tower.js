@@ -67,11 +67,15 @@ SentryTower.APIHandler = {
 SentryTower.storageHandler = {
 	storage: chrome.storage.local,
 	isRunning: false,
+	unreadIds: [],
 	results: {},
 
 	init: function () {
-		this.storage.get('isRunning', function (result) {
+		this.storage.get(['isRunning', 'unreadIds'], function (result) {
 			this.isRunning = !!(result.isRunning);
+			if (result.unreadIds.length > 0) {
+				this.unreadIds = result.unreadIds;
+			}
 		});
 	},
 
@@ -92,22 +96,83 @@ SentryTower.storageHandler = {
 	},
 
 	setResult: function (queryUrl, data) {
-		var unreadCount = 0;
 
-		$.each(data, function (key, value) {
-			if (value.hasSeen === false) {
-				unreadCount += 1;
+		function uniqueArray(a) {
+			var temp = {};
+			for (var i = 0; i < a.length; i++) {
+				temp[a[i]] = true;
 			}
-		});
 
-		var query = this.getQuery(queryUrl);
-		this.results[query] = {
-			count: data.length,
-			unreadCount: unreadCount,
-			data: data
-		};
+			var r = [];
+			for (var k in temp) {
+				if (k > 0) {
+					r.push(k);
+				}
+			}
 
-		this.storage.set({results: this.results});
+			return r;
+		}
+
+		/**
+		 *
+		 * @param arr1
+		 * @param arr2
+		 *
+		 * @returns {Array}
+		 */
+		function arrayIntersect(arr1, arr2) {
+			var arr = [];
+
+			for (var i = 0; i < arr2.length; i++) {
+				if (!arr1.includes(arr2[i])) {
+					arr.push(arr2[i]);
+				}
+			}
+
+			return arr;
+		}
+
+
+		if (data.length) {
+			var newUnreadIds = [];
+			var unreadCount = 0;
+
+			$.each(data, function (key, value) {
+				if (value.hasSeen === false) {
+					unreadCount++;
+					newUnreadIds.push(value.id);
+				}
+			});
+
+			newUnreadIds = uniqueArray(newUnreadIds);
+
+			var intersect = arrayIntersect(this.unreadIds, newUnreadIds);
+			this.showNewUnreadErrorNotification(intersect);
+
+			var query = this.getQuery(queryUrl);
+			this.results[query] = {
+				count: data.length,
+				unreadCount: unreadCount,
+				data: data
+			};
+
+			this.unreadIds = newUnreadIds;
+			this.storage.set({results: this.results});
+			this.storage.set({unreadIds: newUnreadIds});
+		}
+	},
+
+	showNewUnreadErrorNotification: function (errorIdArray) {
+		var errorCount = errorIdArray.length;
+		if (errorCount > 0) {
+			chrome.notifications.create('reminder', {
+				type: 'basic',
+				iconUrl: '../img/tower.png',
+				title: 'Sentry Tower Alert!',
+				message: 'Found ' + errorCount + ' new errors.'
+			}, function (notificationId) {
+			});
+		}
 	}
 };
 

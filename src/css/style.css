@@ -22,4 +22,17 @@ time, mark, audio, video {
 html {
 	line-height: 1;
 	font-family: 'Helvetica Neue', 'Lucida Grande', sans-serif;
+	color: #333333;
+}
+
+a {
+	text-decoration: none;
+	color: #1a5062;
+}
+
+blockquote {
+	border: 1px solid #999999;
+	background: #F2F2F2;
+	padding: 15px;
+	font-size: 80%;
 }
