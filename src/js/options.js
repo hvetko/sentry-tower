@@ -29,15 +29,60 @@ SentryTower.Options = {
 
 	restoreOptions: function () {
 		var self = this;
-		this.storage.storage.get(['sentryOptions', 'sentryProjects'], function (items) {
+		this.storage.storage.get(['sentryOptions', 'sentryProjects', 'sentryOrganizations'], function (items) {
 			document.getElementById('sentry-api-token').value = items.sentryOptions.sentryToken;
 			document.getElementById('sentry-url').value = items.sentryOptions.sentryUrl;
 			document.getElementById('sentry-check-interval').value = items.sentryOptions.sentryCheckInterval / 1000; // Converting from milliseconds
+
+			$.each(items.sentryOrganizations, function (index, organizationName) {
+				self.addNewOrganizationToLists(organizationName);
+			});
 
 			$.each(items.sentryProjects, function (index, projectName) {
 				self.addNewProjectToLists(projectName);
 			});
 		});
+	},
+
+	saveNewOrganization: function () {
+		var self = this;
+		var newOrganizationName = $('#sentry-organization').val().trim();
+
+		if (newOrganizationName) {
+			this.storage.storage.get(['sentryOrganizations'], function (items) {
+				var organizations = [];
+				if (items.sentryOrganizations) {
+					organizations = items.sentryOrganizations;
+				}
+
+				organizations.push(newOrganizationName);
+				self.storage.storage.set({sentryOrganizations: organizations});
+				self.addNewOrganizationToLists(newOrganizationName);
+				self.showMessage('Organization is saved.');
+				self.toggleDivs('sentry-existing-organizations', 'new-organization');
+			});
+
+		} else {
+			this.showMessage('ERROR: Organization name cannot be empty.');
+		}
+	},
+
+	addNewOrganizationToLists: function (organizationName) {
+		var self = this;
+		$('#sentry-organizations').append(
+			$('<li>').append(
+				$('<span>').text(organizationName).append(
+					$('<span>').attr('class', 'close-x').append("x").on('click', function () {
+						self.deleteOrganization(organizationName);
+					})
+				)
+			));
+	},
+
+	deleteOrganization: function (organizationName) {
+		console.log('del', organizationName);
+		//remove from projects list
+		//remove from query dropdown
 	},
 
 	saveNewProject: function () {
@@ -54,7 +99,7 @@ SentryTower.Options = {
 				projects.push(newProjectName);
 				self.storage.storage.set({sentryProjects: projects});
 				self.addNewProjectToLists(newProjectName);
-				self.showMessage('Project Name is saved.');
+				self.showMessage('Project is saved.');
 				self.toggleDivs('sentry-existing-projects', 'new-project');
 			});
 
@@ -130,6 +175,10 @@ $('.closer').click(function () {
 
 $('#save').click(function () {
 	SentryTower.Options.saveOptions();
+});
+
+$('#new-organization-save').click(function () {
+	SentryTower.Options.saveNewOrganization();
 });
 
 $('#new-project-save').click(function () {

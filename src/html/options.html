@@ -55,6 +55,28 @@
 	<div class="options-divider">
 		<h2>Querying Settings</h2>
 		<section>
+			<label>Organizations</label>
+			<div class="toggler" id="sentry-existing-organizations">
+				<ul id="sentry-organizations" class="removable-list">
+				</ul>
+				<div class="">
+					<span class="action action-flat toggler-button" data-open="new-organization" data-close="sentry-existing-organizations">Add New Organization</span>
+				</div>
+			</div>
+			<div>
+				<div class="adder" id="new-organization" style="display: none">
+					Add New Organization
+					<section>
+						<label for="sentry-organization">Organization URl shortcode</label>
+						<input type="text" id="sentry-organization"/>
+					</section>
+					<span class="action action-raised" data-related="new-organization" id="new-organization-save">Save</span>
+					<span class="action action-flat toggler-button" data-open="sentry-existing-organizations" data-close="new-organization">Cancel</span>
+				</div>
+			</div>
+		</section>
+
+		<section>
 			<label>Projects</label>
 			<div class="toggler" id="sentry-existing-projects">
 				<ul id="sentry-projects" class="removable-list">
