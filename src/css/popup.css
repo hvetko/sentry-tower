@@ -3,6 +3,7 @@
 	margin: auto;
 	padding: 15px;
 }
+
 #watchlist {
 	font-size: 75%;
 	list-style: none;
@@ -31,4 +32,12 @@
 
 .query {
 	display: inline-block;
+}
+
+footer {
+	padding: 10px;
+}
+
+.link {
+	cursor: pointer;
 }

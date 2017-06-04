@@ -5,13 +5,19 @@ SentryTower.popupHandler = {
 
 	init: function () {
 		this.storage = SentryTower.storageHandler;
-		this.storage.init();
 	},
 
 	formatLargeCounts: function (count) {
 		return (count > 999) ? '1k+' : count;
 	},
 
+	/**
+	 * Add single result to watchlist
+	 *
+	 * @param query
+	 * @param unseenCount
+	 * @param seenCount
+	 */
 	addWatchlistItem: function (query, unseenCount, seenCount) {
 		var watchlist = $('#watchlist');
 
@@ -24,7 +30,10 @@ SentryTower.popupHandler = {
 		item.appendTo(watchlist);
 	},
 
-	setWatchlist: function () {
+	/**
+	 * Create fresh watchlist based on results from storage
+	 */
+	setWatchList: function () {
 		var self = this;
 
 		this.storage.storage.get('results', function (results) {
@@ -41,6 +50,13 @@ SentryTower.popupHandler = {
 				});
 			}
 		});
+	},
+
+	/**
+	 * Helper function to open Options page
+	 */
+	openOptionsPage: function () {
+		window.open(chrome.extension.getURL("html/options.html"), '_blank');
 	}
 
 };
@@ -48,6 +64,8 @@ SentryTower.popupHandler = {
 var popup = SentryTower.popupHandler;
 popup.init();
 
-document.addEventListener('DOMContentLoaded', SentryTower.popupHandler.setWatchlist());
-// document.getElementById('run-sentry').addEventListener('click', runTower);
+document.addEventListener('DOMContentLoaded', popup.setWatchList());
 
+$('#option-link').click(function () {
+	popup.openOptionsPage();
+});

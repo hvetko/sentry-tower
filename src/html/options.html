@@ -7,12 +7,12 @@
 	<link rel="stylesheet" href="../css/options.css" type="text/css">
 </head>
 <body>
+<div id="update-msg-rounder">
+	<div id="update-msg" style="display: none"></div>
+</div>
+
 <div id="options">
 	<h1>Tower</h1>
-
-	<div id="update-msg-rounder">
-		<div id="update-msg" style="display: none"></div>
-	</div>
 
 	<div class="options-divider">
 		<p>Save your Sentry settings and queries you want to monitor.</p>
@@ -22,6 +22,7 @@
 		</p>
 
 		<blockquote id="docs" style="display: none">
+			<div class="action action-flat closer x-button" data-related="docs">x</div>
 			<h2>Docs</h2>
 			<p><strong>Sentry API Key</strong> - </p>
 			<p>Updated and, possibly, more detailed documentation can be found on the <strong><a href="#"
@@ -32,6 +33,7 @@
 	</div>
 
 	<div class="options-divider">
+		<h2>Sentry Settings</h2>
 		<section>
 			<label for="sentry-api-token">Sentry API Token</label>
 			<input type="text" id="sentry-api-token" placeholder="Sentry API Token"/>
@@ -43,23 +45,33 @@
 		</section>
 
 		<section>
-			<label for="sentry-check-interval">Check interval</label>
-			<input type="number" id="sentry-check-interval" placeholder="Check interval"/>
+			<label for="sentry-check-interval">Check interval (seconds)</label>
+			<input type="number" id="sentry-check-interval" placeholder="Check interval (seconds)"/>
 		</section>
 
+		<button id="save" class="action action-raised action-big">Save</button>
+	</div>
+
+	<div class="options-divider">
+		<h2>Querying Settings</h2>
 		<section>
 			<label>Projects</label>
-			<ul></ul>
+			<div class="toggler" id="sentry-existing-projects">
+				<ul id="sentry-projects" class="removable-list">
+				</ul>
+				<div class="">
+					<span class="action action-flat toggler-button" data-open="new-project" data-close="sentry-existing-projects">Add New Project</span>
+				</div>
+			</div>
 			<div>
-				<p><span class="action action-flat opener" data-related="new-project">Add New Project</span></p>
 				<div class="adder" id="new-project" style="display: none">
+					Add New Project
 					<section>
 						<label for="sentry-project">Project URl shortcode</label>
 						<input type="text" id="sentry-project"/>
 					</section>
-
 					<span class="action action-raised" data-related="new-project" id="new-project-save">Save</span>
-					<span class="action action-flat closer" data-related="new-project">Cancel</span>
+					<span class="action action-flat toggler-button" data-open="sentry-existing-projects" data-close="new-project">Cancel</span>
 				</div>
 			</div>
 		</section>
@@ -72,13 +84,7 @@
 				<div class="adder" id="new-query" style="display: none">
 					<section>
 						<label for="sentry-query-project">Project</label>
-						<select id="sentry-query-project">
-							<option value="Internet Explorer">sd</option>
-							<option value="Firefox">wewer</option>
-							<option value="Chrome">fsdf</option>
-							<option value="Opera">fsdfsdf</option>
-							<option value="Safari">sdf</option>
-						</select>
+						<select id="sentry-query-project"></select>
 					</section>
 
 					<section>
@@ -106,9 +112,6 @@
 
 	</div>
 
-	<div class="options-divider">
-		<button id="save" class="action action-raised action-big">Save</button>
-	</div>
 
 </div>
 <footer>

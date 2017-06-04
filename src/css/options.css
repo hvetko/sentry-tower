@@ -2,16 +2,15 @@ h1 {
 	font-size: 200%;
 }
 
-footer {
-	border-top: 1px solid #999999;
-	padding: 20px;
-	text-align: right;
-	color: #8c8c8c;
-	font-size: 75%;
+h2 {
+	font-size: 150%;
 }
 
 #update-msg-rounder {
-	min-height: 20px;
+	position:fixed;
+	top:0;
+	width:100%;
+	z-index:100;
 }
 
 #options {
@@ -78,6 +77,44 @@ p {
 	font-size: 100%;
 }
 
-.options-divider{
-	padding-bottom: 10px;
+#update-msg{
+	background: #1a5062;
+	color: #ffffff;
+	padding: 5px 10px;
+}
+
+.options-divider {
+	border-bottom: 1px dashed #999999;
+	padding-bottom: 20px;
+	margin-bottom: 20px;
+}
+
+.removable-list {
+	list-style: none;
+	margin-bottom: 20px;
+}
+
+.removable-list li {
+	border: 1px solid #f2f2f2;
+	padding: 5px 10px;
+	margin: 0 10px 5px 0;
+	display: inline-block;
+}
+
+.removable-list li:hover {
+	background: #F2F2F2;
+}
+
+.x-button{
+	float: right;
+}
+
+.close-x {
+	background: #1a5062;
+	color: #ffffff;
+	font-size: 50%;
+	padding: 0 4px;
+	margin-left: 5px;
+	cursor: pointer;
+	border-radius: 5px;
 }

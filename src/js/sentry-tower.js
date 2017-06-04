@@ -9,9 +9,11 @@ SentryTower.APIHandler = {
 	getWatchURLs: function () {
 		return [
 			'https://sentry.gygadmin.com/api/0/projects/production/gygcore/issues/?query=is%3Aunresolved+tour_item&limit=25&sort=date&statsPeriod=24h&shortIdLookup=1',
+			'https://sentry.gygadmin.com/api/0/projects/production/gygcore/issues/?query=is%3Aunresolved+tour_to_location&limit=25&sort=date&statsPeriod=24h&shortIdLookup=1',
 			'https://sentry.gygadmin.com/api/0/projects/production/gygcore/issues/?query=is%3Aunresolved+tourItem&limit=25&sort=date&statsPeriod=24h&shortIdLookup=1',
 			'https://sentry.gygadmin.com/api/0/projects/production/gygcore/issues/?query=is%3Aunresolved+assigned%3Ame&limit=25&sort=date&statsPeriod=24h&shortIdLookup=1',
-			'', '\n'
+			'',
+			'\n'
 		];
 	},
 
@@ -55,6 +57,7 @@ SentryTower.APIHandler = {
 
 	/**
 	 * Process API request error
+	 * TODO
 	 *
 	 * @param msg
 	 */
@@ -96,7 +99,12 @@ SentryTower.storageHandler = {
 	},
 
 	setResult: function (queryUrl, data) {
-
+		/**
+		 *
+		 * @param a
+		 *
+		 * @returns {Array}
+		 */
 		function uniqueArray(a) {
 			var temp = {};
 			for (var i = 0; i < a.length; i++) {
