@@ -16,6 +16,7 @@ SentryTower.backgroundHandler = {
 	run: function () {
 		this.updateBadge();
 		var client = SentryTower.APIHandler;
+		client.init();
 		client.run();
 	},
 

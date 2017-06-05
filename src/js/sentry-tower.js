@@ -1,20 +1,25 @@
 var SentryTower = SentryTower || {};
 
 SentryTower.APIHandler = {
+	storage: null,
+	watchUrls: [],
+	apiVersionURL: '/api/0/',
+
+	init: function () {
+		this.storage = SentryTower.storageHandler;
+	},
+
 	/**
 	 * Return array of sentry query URLs
-	 *
-	 * @returns {string[]}
 	 */
-	getWatchURLs: function () {
-		return [
-			'https://sentry.gygadmin.com/api/0/projects/production/gygcore/issues/?query=is%3Aunresolved+tour_item&limit=25&sort=date&statsPeriod=24h&shortIdLookup=1',
-			'https://sentry.gygadmin.com/api/0/projects/production/gygcore/issues/?query=is%3Aunresolved+tour_to_location&limit=25&sort=date&statsPeriod=24h&shortIdLookup=1',
-			'https://sentry.gygadmin.com/api/0/projects/production/gygcore/issues/?query=is%3Aunresolved+tourItem&limit=25&sort=date&statsPeriod=24h&shortIdLookup=1',
-			'https://sentry.gygadmin.com/api/0/projects/production/gygcore/issues/?query=is%3Aunresolved+assigned%3Ame&limit=25&sort=date&statsPeriod=24h&shortIdLookup=1',
-			'',
-			'\n'
-		];
+	setWatchURLs: function () {
+		var self = this;
+
+		if (!this.watchUrls || this.watchUrls.length < 1) {
+			self.storage.storage.get(['sentryOptions', 'sentryQueries'], function (result) {
+				self.watchUrls = result.sentryQueries;
+			});
+		}
 	},
 
 	/**
@@ -22,12 +27,13 @@ SentryTower.APIHandler = {
 	 */
 	run: function () {
 		var self = this;
+		self.setWatchURLs();
 
-		$.each(self.getWatchURLs(), function (key, url) {
-			if (url.trim()) {
-				self.apiRequest(url);
-			}
-		});
+		if (self.watchUrls.length > 0) {
+			$.each(self.watchUrls, function (key, query) {
+				self.apiRequest(query.apiUrl);
+			});
+		}
 	},
 
 	/**
@@ -37,8 +43,6 @@ SentryTower.APIHandler = {
 	 */
 	apiRequest: function (queryURL) {
 		var self = this;
-		var storage = SentryTower.storageHandler;
-		storage.init();
 
 		$.ajax({
 			url: queryURL,
@@ -49,7 +53,7 @@ SentryTower.APIHandler = {
 				self.processError();
 			},
 			success: function (responseData) {
-				storage.setResult(queryURL, responseData);
+				self.storage.setResult(queryURL, responseData);
 			},
 			type: 'GET'
 		});
@@ -141,7 +145,6 @@ SentryTower.storageHandler = {
 
 			return arr;
 		}
-
 
 		if (data.length) {
 			var newUnreadIds = [];

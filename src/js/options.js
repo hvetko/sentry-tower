@@ -2,10 +2,16 @@ var SentryTower = SentryTower || {};
 
 SentryTower.Options = {
 	storage: null,
+	sentryUrl: null,
 
 	init: function () {
-		this.storage = SentryTower.storageHandler;
-		this.storage.init();
+		var self = this;
+		self.storage = SentryTower.storageHandler;
+		self.storage.init();
+
+		self.storage.storage.get(['sentryOptions'], function (result) {
+			self.sentryUrl = result.sentryOptions.sentryUrl;
+		});
 	},
 
 	/**
@@ -15,8 +21,8 @@ SentryTower.Options = {
 		var self = this;
 		var options = {
 			sentryToken: document.getElementById('sentry-api-token').value,
+			//TODO: trim /
 			sentryUrl: document.getElementById('sentry-url').value,
-			sentryAPIUrl: document.getElementById('sentry-url').value + "",
 			sentryCheckInterval: document.getElementById('sentry-check-interval').value * 1000 // Converting to milliseconds
 		};
 
@@ -224,6 +230,19 @@ SentryTower.Options = {
 			status: $('#sentry-query-status').val().trim(),
 			assigned: $('#sentry-query-assigned-me:checked').length > 0
 		};
+
+		var apiUrl = self.sentryUrl + '/api/0/projects/' + newQuery.project + '/issues/?query=is%3A' + newQuery.status + '+' + encodeURIComponent(newQuery.query).replace(/%20/g, '+');
+		var url = self.sentryUrl + '/' + newQuery.project + '/?query=is%3A' + newQuery.status + '+' + encodeURIComponent(newQuery.query).replace(/%20/g, '+');
+
+		if (newQuery.assigned) {
+			apiUrl += '+assigned%3Ame';
+			url += '+assigned%3Ame';
+		}
+
+		newQuery.apiUrl = apiUrl;
+		newQuery.url = url;
+
+
 
 		if (newQuery.query) {
 			this.storage.storage.get(['sentryQueries'], function (items) {
