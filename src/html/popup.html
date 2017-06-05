@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="../css/popup.css" type="text/css">
 </head>
 <body>
+<a href=""></a>
 <div id="popup">
 	<section>
 		<h2>Watchlist</h2>
@@ -17,16 +18,19 @@
 </div>
 
 <ul id="list-template">
-	<li id="list-template-item">
+	<li class="list-item">
 		<span class="count unseen-count"></span>
 		<span class="count seen-count"></span>
-		<span class="query"></span>
+		<a href="" target="_blank">
+			<span class="query-project"></span>:
+			<span class="query"></span>
+		</a>
 	</li>
 </ul>
 
-	<footer>
-		<span id="option-link" class="link">Options &raquo;</span>
-	</footer>
+<footer>
+	<span id="option-link" class="link">Options &raquo;</span>
+</footer>
 
 <script src="../js/jquery-3.1.0.min.js"></script>
 <script src="../js/sentry-tower.js"></script>

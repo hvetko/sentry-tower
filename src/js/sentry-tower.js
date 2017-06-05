@@ -31,7 +31,7 @@ SentryTower.APIHandler = {
 
 		if (self.watchUrls.length > 0) {
 			$.each(self.watchUrls, function (key, query) {
-				self.apiRequest(query.apiUrl);
+				self.apiRequest(query);
 			});
 		}
 	},
@@ -39,10 +39,11 @@ SentryTower.APIHandler = {
 	/**
 	 * API requester
 	 *
-	 * @param queryURL
+	 * @param query
 	 */
-	apiRequest: function (queryURL) {
+	apiRequest: function (query) {
 		var self = this;
+		var queryURL = query.apiUrl;
 
 		$.ajax({
 			url: queryURL,
@@ -53,7 +54,7 @@ SentryTower.APIHandler = {
 				self.processError();
 			},
 			success: function (responseData) {
-				self.storage.setResult(queryURL, responseData);
+				self.storage.setResult(query, responseData);
 			},
 			type: 'GET'
 		});
@@ -89,6 +90,7 @@ SentryTower.storageHandler = {
 	},
 
 	/**
+	 * TODO: remove
 	 * Cleans out the search query from the query URL
 	 *
 	 * @param url
@@ -104,7 +106,7 @@ SentryTower.storageHandler = {
 		}
 	},
 
-	setResult: function (queryUrl, data) {
+	setResult: function (query, data) {
 		/**
 		 *
 		 * @param a
@@ -146,10 +148,11 @@ SentryTower.storageHandler = {
 			return arr;
 		}
 
-		if (data.length) {
-			var newUnreadIds = [];
-			var unreadCount = 0;
+		var queryUrl = query.apiUrl;
+		var newUnreadIds = [];
+		var unreadCount = 0;
 
+		if (data.length) {
 			$.each(data, function (key, value) {
 				if (value.hasSeen === false) {
 					unreadCount++;
@@ -162,17 +165,19 @@ SentryTower.storageHandler = {
 			var intersect = arrayIntersect(this.unreadIds, newUnreadIds);
 			this.showNewUnreadErrorNotification(intersect);
 
-			var query = this.getQuery(queryUrl);
-			this.results[query] = {
-				count: data.length,
-				unreadCount: unreadCount,
-				data: data
-			};
-
 			this.unreadIds = newUnreadIds;
-			this.storage.set({results: this.results});
-			this.storage.set({unreadIds: newUnreadIds});
 		}
+
+		this.results[queryUrl] = {
+			count: data.length,
+			unreadCount: unreadCount,
+			data: data,
+			query: query
+		};
+
+
+		this.storage.set({results: this.results});
+		this.storage.set({unreadIds: newUnreadIds});
 	},
 
 	showNewUnreadErrorNotification: function (errorIdArray) {

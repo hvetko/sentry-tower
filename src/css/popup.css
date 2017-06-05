@@ -41,3 +41,12 @@ footer {
 .link {
 	cursor: pointer;
 }
+
+ul#watchlist li {
+	padding: 4px 2px;
+	margin-bottom: 2px;
+}
+
+ul#watchlist li:hover {
+	background: #f2f2f2;
+}

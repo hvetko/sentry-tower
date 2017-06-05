@@ -21,11 +21,12 @@ SentryTower.popupHandler = {
 	addWatchlistItem: function (query, unseenCount, seenCount) {
 		var watchlist = $('#watchlist');
 
-		var item = $("#list-template-item").clone();
+		var item = $("ul#list-template li").clone();
 		item.children('.unseen-count').text(unseenCount);
 		item.children('.seen-count').text(seenCount);
-		item.children('.query').children('a').text(query);
-		item.children('.query').text(query);
+		item.children('a').attr('href', query.url);
+		item.children('a').children('.query-project').text(query.project);
+		item.children('a').children('.query').text(query.query);
 
 		item.appendTo(watchlist);
 	},
@@ -39,6 +40,7 @@ SentryTower.popupHandler = {
 		this.storage.storage.get('results', function (results) {
 			$('#watchlist').empty();
 
+			console.log(results.results);
 			if (!$.isEmptyObject(results.results)) {
 				$('#loader').hide();
 
@@ -46,8 +48,10 @@ SentryTower.popupHandler = {
 					var unseenCount = self.formatLargeCounts(result.unreadCount);
 					var seenCount = (result.count - result.unreadCount);
 
-					self.addWatchlistItem(query, unseenCount, seenCount);
+					self.addWatchlistItem(result.query, unseenCount, seenCount);
 				});
+			} else {
+				//TODO; show msg
 			}
 		});
 	},
