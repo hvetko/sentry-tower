@@ -10,30 +10,20 @@ SentryTower.APIHandler = {
 	},
 
 	/**
-	 * Return array of sentry query URLs
-	 */
-	setWatchURLs: function () {
-		var self = this;
-
-		if (!this.watchUrls || this.watchUrls.length < 1) {
-			self.storage.storage.get(['sentryOptions', 'sentryQueries'], function (result) {
-				self.watchUrls = result.sentryQueries;
-			});
-		}
-	},
-
-	/**
 	 * Run API requests
 	 */
 	run: function () {
 		var self = this;
-		self.setWatchURLs();
 
-		if (self.watchUrls.length > 0) {
-			$.each(self.watchUrls, function (key, query) {
-				self.apiRequest(query);
-			});
-		}
+		self.storage.storage.get(['sentryQueries'], function (result) {
+			var watchUrls = result.sentryQueries;
+
+			if (watchUrls.length > 0) {
+				$.each(watchUrls, function (key, query) {
+					self.apiRequest(query);
+				});
+			}
+		});
 	},
 
 	/**
@@ -44,6 +34,7 @@ SentryTower.APIHandler = {
 	apiRequest: function (query) {
 		var self = this;
 		var queryURL = query.apiUrl;
+		console.log(queryURL);
 
 		$.ajax({
 			url: queryURL,
@@ -90,22 +81,10 @@ SentryTower.storageHandler = {
 	},
 
 	/**
-	 * TODO: remove
-	 * Cleans out the search query from the query URL
 	 *
-	 * @param url
-	 * @returns {*}
+	 * @param query
+	 * @param data
 	 */
-	getQuery: function (url) {
-		var results = new RegExp('[\?&]query=([^&#]*)').exec(url);
-
-		if (results === null) {
-			return null;
-		} else {
-			return results[1] || 0;
-		}
-	},
-
 	setResult: function (query, data) {
 		/**
 		 *
@@ -149,6 +128,7 @@ SentryTower.storageHandler = {
 		}
 
 		var queryUrl = query.apiUrl;
+		var queryProject = query.project;
 		var newUnreadIds = [];
 		var unreadCount = 0;
 
@@ -163,21 +143,30 @@ SentryTower.storageHandler = {
 			newUnreadIds = uniqueArray(newUnreadIds);
 
 			var intersect = arrayIntersect(this.unreadIds, newUnreadIds);
+			// console.log('----unreads', intersect.length);
 			this.showNewUnreadErrorNotification(intersect);
-
-			this.unreadIds = newUnreadIds;
+			this.unreadIds = uniqueArray(this.unreadIds.concat(newUnreadIds));
 		}
 
-		this.results[queryUrl] = {
+		if (!this.results[queryProject]) {
+			this.results[queryProject] = {};
+		}
+
+		this.results[queryProject][queryUrl] = {
 			count: data.length,
 			unreadCount: unreadCount,
 			data: data,
 			query: query
 		};
 
-
+		// console.log('total: ', this.unreadIds.length);
+		// console.log(this.unreadIds);
+		console.log(this.results);
 		this.storage.set({results: this.results});
-		this.storage.set({unreadIds: newUnreadIds});
+		this.storage.set({unreadIds: this.unreadIds});
+
+		var background = SentryTower.backgroundHandler;
+		background.updateBadge();
 	},
 
 	showNewUnreadErrorNotification: function (errorIdArray) {

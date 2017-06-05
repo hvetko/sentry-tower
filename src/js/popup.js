@@ -17,9 +17,10 @@ SentryTower.popupHandler = {
 	 * @param query
 	 * @param unseenCount
 	 * @param seenCount
+	 * @param listIdentifier
 	 */
-	addWatchlistItem: function (query, unseenCount, seenCount) {
-		var watchlist = $('#watchlist');
+	addWatchlistItem: function (query, unseenCount, seenCount, listIdentifier) {
+		var watchlist = $('#' + listIdentifier);
 
 		var item = $("ul#list-template li").clone();
 		item.children('.unseen-count').text(unseenCount);
@@ -32,26 +33,52 @@ SentryTower.popupHandler = {
 	},
 
 	/**
-	 * Create fresh watchlist based on results from storage
+	 * Create fresh watchlist based on results from storage.
+	 * List of results is grouped by project first.
 	 */
 	setWatchList: function () {
 		var self = this;
 
 		this.storage.storage.get('results', function (results) {
-			$('#watchlist').empty();
+			var watchlist = $('#watchlist');
 
-			console.log(results.results);
+			watchlist.empty();
+
 			if (!$.isEmptyObject(results.results)) {
-				$('#loader').hide();
+				var projectCnt = 1;
+				$.each(results.results, function (projectName, queryObject) {
+					console.log('--', projectName, queryObject);
+					watchlist.append(
+						$('<h3>').text(projectName)
+					).append(
+						$('<ul>').attr('id', 'project-' + projectCnt).attr('class', 'watchlist')
+					);
 
-				$.each(results.results, function (query, result) {
-					var unseenCount = self.formatLargeCounts(result.unreadCount);
-					var seenCount = (result.count - result.unreadCount);
+					$.each(queryObject, function (queryUrl, result) {
+						var unseenCount = self.formatLargeCounts(result.unreadCount);
+						var seenCount = (result.count - result.unreadCount);
 
-					self.addWatchlistItem(result.query, unseenCount, seenCount);
+						self.addWatchlistItem(result.query, unseenCount, seenCount, 'project-' + projectCnt);
+					});
+
+					projectCnt++;
+
+					// if (!issues.result.query.project) {
+					// 	issues.result.query.project = [];
+					// }
+					//
+					// issues.result.query.project.push(
+					// 	{
+					// 		unseenCount: self.formatLargeCounts(result.unreadCount),
+					// 		seenCount: (result.count - result.unreadCount),
+					// 		query: result.query
+					// 	}
+					// );
+
+
 				});
 			} else {
-				//TODO; show msg
+				//TODO: show msg
 			}
 		});
 	},

@@ -231,6 +231,12 @@ SentryTower.Options = {
 			assigned: $('#sentry-query-assigned-me:checked').length > 0
 		};
 
+		console.log(self.sentryUrl);
+		if (!self.sentryUrl) {
+			// TODO: process error
+			// TODO: warning. prevent saving without URL
+		}
+
 		var apiUrl = self.sentryUrl + '/api/0/projects/' + newQuery.project + '/issues/?query=is%3A' + newQuery.status + '+' + encodeURIComponent(newQuery.query).replace(/%20/g, '+');
 		var url = self.sentryUrl + '/' + newQuery.project + '/?query=is%3A' + newQuery.status + '+' + encodeURIComponent(newQuery.query).replace(/%20/g, '+');
 
@@ -241,8 +247,6 @@ SentryTower.Options = {
 
 		newQuery.apiUrl = apiUrl;
 		newQuery.url = url;
-
-
 
 		if (newQuery.query) {
 			this.storage.storage.get(['sentryQueries'], function (items) {

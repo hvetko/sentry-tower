@@ -4,9 +4,16 @@
 	padding: 15px;
 }
 
-#watchlist {
+h3 {
+	font-weight: bold;
+	color: #666666;
+	padding: 10px 0;
+}
+
+.watchlist {
 	font-size: 75%;
 	list-style: none;
+	margin-bottom: 10px;
 }
 
 #list-template {
@@ -30,7 +37,15 @@
 	border: 1px solid #a6f3a6;
 }
 
+.query-project {
+	/*background: #FEF2CC;*/
+	/*border: 1px solid #FEE599;*/
+	color: #999999;
+	padding: 2px 4px;
+}
+
 .query {
+	font-size: 14px;
 	display: inline-block;
 }
 
@@ -42,11 +57,13 @@ footer {
 	cursor: pointer;
 }
 
-ul#watchlist li {
+ul.watchlist li {
 	padding: 4px 2px;
 	margin-bottom: 2px;
 }
 
-ul#watchlist li:hover {
+ul.watchlist li:hover {
 	background: #f2f2f2;
 }
+
+
