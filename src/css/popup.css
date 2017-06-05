@@ -47,6 +47,9 @@ h3 {
 .query {
 	font-size: 14px;
 	display: inline-block;
+	white-space: nowrap;
+	overflow: hidden;
+	max-width: 225px;
 }
 
 footer {
