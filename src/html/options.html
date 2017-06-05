@@ -53,14 +53,17 @@
 	</div>
 
 	<div class="options-divider">
+
 		<h2>Querying Settings</h2>
+
 		<section>
 			<label>Organizations</label>
 			<div class="toggler" id="sentry-existing-organizations">
 				<ul id="sentry-organizations" class="removable-list">
 				</ul>
 				<div class="">
-					<span class="action action-flat toggler-button" data-open="new-organization" data-close="sentry-existing-organizations">Add New Organization</span>
+					<span class="action action-flat toggler-button" data-open="new-organization"
+						  data-close="sentry-existing-organizations">Add New Organization</span>
 				</div>
 			</div>
 			<div>
@@ -70,8 +73,10 @@
 						<label for="sentry-organization">Organization URl shortcode</label>
 						<input type="text" id="sentry-organization"/>
 					</section>
-					<span class="action action-raised" data-related="new-organization" id="new-organization-save">Save</span>
-					<span class="action action-flat toggler-button" data-open="sentry-existing-organizations" data-close="new-organization">Cancel</span>
+					<span class="action action-raised" data-related="new-organization"
+						  id="new-organization-save">Save</span>
+					<span class="action action-flat toggler-button" data-open="sentry-existing-organizations"
+						  data-close="new-organization">Cancel</span>
 				</div>
 			</div>
 		</section>
@@ -82,58 +87,76 @@
 				<ul id="sentry-projects" class="removable-list">
 				</ul>
 				<div class="">
-					<span class="action action-flat toggler-button" data-open="new-project" data-close="sentry-existing-projects">Add New Project</span>
+					<span class="action action-flat toggler-button" data-open="new-project"
+						  data-close="sentry-existing-projects">Add New Project</span>
 				</div>
 			</div>
 			<div>
 				<div class="adder" id="new-project" style="display: none">
 					Add New Project
 					<section>
+						<label for="sentry-project-organization">Organization</label>
+						<select id="sentry-project-organization"></select>
+					</section>
+
+					<section>
 						<label for="sentry-project">Project URl shortcode</label>
 						<input type="text" id="sentry-project"/>
 					</section>
 					<span class="action action-raised" data-related="new-project" id="new-project-save">Save</span>
-					<span class="action action-flat toggler-button" data-open="sentry-existing-projects" data-close="new-project">Cancel</span>
+					<span class="action action-flat toggler-button" data-open="sentry-existing-projects"
+						  data-close="new-project">Cancel</span>
 				</div>
 			</div>
 		</section>
 
 		<section>
 			<label>Queries</label>
-			<ul></ul>
+			<div class="toggler" id="sentry-existing-queries">
+				<ul id="sentry-queries" class="removable-list">
+				</ul>
+				<div class="">
+					<span class="action action-flat toggler-button" data-open="new-query"
+						  data-close="sentry-existing-queries">Add New Query</span>
+				</div>
+			</div>
 			<div>
-				<p><span class="action action-flat opener" data-related="new-query">Add New Query</span></p>
 				<div class="adder" id="new-query" style="display: none">
+					Add New Project
 					<section>
-						<label for="sentry-query-project">Project</label>
+						<label for="sentry-query-project">Organization/Project</label>
 						<select id="sentry-query-project"></select>
-					</section>
-
-					<section>
-						<label for="sentry-query-query">Query</label>
-						<input type="text" id="sentry-query-query"/>
 					</section>
 
 					<section>
 						<label for="sentry-query-status">Status</label>
 						<select id="sentry-query-status">
-							<option value="unresolved">Unresolved</option>
-							<option value="resolved">Resolved</option>
-							<option value="muted">Muted</option>
-							<option value="assigned">Assigned</option>
-							<option value="unassigned">Unassigned</option>
+							<option>unresolved</option>
+							<option>resolved</option>
+							<option>ignored</option>
+							<option>assigned</option>
+							<option>unassigned</option>
 						</select>
 					</section>
 
-					<span class="action action-raised" data-related="new-query">Save</span>
-					<span class="action action-flat closer" data-related="new-query">Cancel</span>
+					<section>
+						<label for="sentry-query-assigned-me">Assigned</label>
+						<input id="sentry-query-assigned-me" type="checkbox" value="me"/>
+						<label for="sentry-query-assigned-me">Me</label>
+					</section>
+
+					<section>
+						<label for="sentry-query">Query</label>
+						<input type="text" id="sentry-query"/>
+					</section>
+					<span class="action action-raised" data-related="new-query" id="new-query-save">Save</span>
+					<span class="action action-flat toggler-button" data-open="sentry-existing-queries"
+						  data-close="new-query">Cancel</span>
 				</div>
 			</div>
 		</section>
 
-
 	</div>
-
 
 </div>
 <footer>

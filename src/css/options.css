@@ -7,10 +7,10 @@ h2 {
 }
 
 #update-msg-rounder {
-	position:fixed;
-	top:0;
-	width:100%;
-	z-index:100;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 100;
 }
 
 #options {
@@ -77,7 +77,7 @@ p {
 	font-size: 100%;
 }
 
-#update-msg{
+#update-msg {
 	background: #1a5062;
 	color: #ffffff;
 	padding: 5px 10px;
@@ -105,7 +105,7 @@ p {
 	background: #F2F2F2;
 }
 
-.x-button{
+.x-button {
 	float: right;
 }
 
@@ -117,4 +117,8 @@ p {
 	margin-left: 5px;
 	cursor: pointer;
 	border-radius: 5px;
+}
+
+.gray {
+	color: #999999;
 }

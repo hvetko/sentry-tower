@@ -27,7 +27,7 @@ SentryTower.backgroundHandler = {
 		this.enableIcon();
 
 		this.storage.storage.get(['unreadIds', 'results'], function (results) {
-			if (results.unreadIds.length > 0) {
+			if (results.unreadIds && results.unreadIds.length > 0) {
 				chrome.browserAction.setBadgeText({text: results.unreadIds.length.toString()});
 				chrome.browserAction.setBadgeBackgroundColor({color: self.colorUnread});
 			} else {

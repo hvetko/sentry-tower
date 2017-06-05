@@ -76,8 +76,10 @@ SentryTower.storageHandler = {
 	init: function () {
 		this.storage.get(['isRunning', 'unreadIds'], function (result) {
 			this.isRunning = !!(result.isRunning);
-			if (result.unreadIds.length > 0) {
+			if (result.unreadIds && result.unreadIds.length > 0) {
 				this.unreadIds = result.unreadIds;
+			} else {
+				this.unreadIds = [];
 			}
 		});
 	},
