@@ -16,15 +16,34 @@ h3 {
 	margin-bottom: 10px;
 }
 
+.watchlist-row {
+	margin-bottom: 10px;
+}
+
+.watchlist-counts {
+	width: 20%;
+	float: left;
+}
+
+.watchlist-query a {
+	display: block;
+	padding: 4px 0;
+	font-size: 14px;
+}
+
+.watchlist-query a:hover {
+	color: #40BDC2;
+}
+
 #list-template {
 	display: none;
 }
 
 .count {
-	display: inline-block;
-	width: 21px;
-	height: 12px;
-	padding: 1px;
+	width: 25%;
+	float: left;
+	padding: 2px 5px;
+	margin-right: 5px;
 }
 
 .unseen-count {
@@ -37,21 +56,6 @@ h3 {
 	border: 1px solid #a6f3a6;
 }
 
-.query-project {
-	/*background: #FEF2CC;*/
-	/*border: 1px solid #FEE599;*/
-	color: #999999;
-	padding: 2px 4px;
-}
-
-.query {
-	font-size: 14px;
-	display: inline-block;
-	white-space: nowrap;
-	overflow: hidden;
-	max-width: 225px;
-}
-
 footer {
 	padding: 10px;
 }
@@ -59,14 +63,3 @@ footer {
 .link {
 	cursor: pointer;
 }
-
-ul.watchlist li {
-	padding: 4px 2px;
-	margin-bottom: 2px;
-}
-
-ul.watchlist li:hover {
-	background: #f2f2f2;
-}
-
-

@@ -22,14 +22,25 @@ SentryTower.popupHandler = {
 	addWatchlistItem: function (query, unseenCount, seenCount, listIdentifier) {
 		var watchlist = $('#' + listIdentifier);
 
-		var item = $("ul#list-template li").clone();
-		item.children('.unseen-count').text(unseenCount);
-		item.children('.seen-count').text(seenCount);
-		item.children('a').attr('href', query.url);
-		item.children('a').children('.query-project').text(query.project);
-		item.children('a').children('.query').text(query.query);
-
-		item.appendTo(watchlist);
+		watchlist.append(
+			$('<div>').attr('class', 'watchlist-row').append(
+				$('<div>').attr('class', 'watchlist-counts').append(
+					$('<div>').attr('class', 'count unseen-count').text(unseenCount)
+				).append(
+					$('<div>').attr('class', 'count seen-count').text(seenCount)
+				).append(
+					$('<div>').attr('class', 'clear')
+				)
+			).append(
+				$('<div>').attr('class', 'watchlist-query-details').append(
+					$('<div>').attr('class', 'watchlist-query').append(
+						$('<a>').attr('href', query.url).attr('target', '_blank').text(query.query)
+					)
+				)
+			).append(
+				$('<div>').attr('class', 'clear')
+			)
+		);
 	},
 
 	/**
@@ -62,20 +73,6 @@ SentryTower.popupHandler = {
 					});
 
 					projectCnt++;
-
-					// if (!issues.result.query.project) {
-					// 	issues.result.query.project = [];
-					// }
-					//
-					// issues.result.query.project.push(
-					// 	{
-					// 		unseenCount: self.formatLargeCounts(result.unreadCount),
-					// 		seenCount: (result.count - result.unreadCount),
-					// 		query: result.query
-					// 	}
-					// );
-
-
 				});
 			} else {
 				//TODO: show msg

@@ -44,3 +44,7 @@ footer {
 	color: #8c8c8c;
 	font-size: 75%;
 }
+
+.clear {
+	clear: both;
+}
