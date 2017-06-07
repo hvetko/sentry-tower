@@ -1,7 +1,7 @@
 {
 	"background": {
 		"scripts": [
-			"js/jquery-3.1.0.min.js",
+			"js/jquery-3.2.1.min.js",
 			"js/sentry-tower.js",
 			"js/background.js"
 		]
@@ -13,9 +13,9 @@
 	},
 	"description": "Sentry Monitor",
 	"icons": {
-		"128": "img/tower.png",
 		"16": "img/tower.png",
-		"48": "img/tower.png"
+		"48": "img/tower.png",
+		"128": "img/tower.png"
 	},
 	"manifest_version": 2,
 	"name": "Sentry Tower",
@@ -26,5 +26,5 @@
 		"http://*/*",
 		"https://*/*"
 	],
-	"version": "1.0"
+	"version": "1.0.0"
 }

@@ -4,6 +4,10 @@
 	padding: 15px;
 }
 
+h1 {
+	font-size: 200%;
+}
+
 h3 {
 	font-weight: bold;
 	color: #666666;
@@ -18,6 +22,10 @@ h3 {
 
 .watchlist-row {
 	margin-bottom: 10px;
+}
+
+.watchlist-row-unseen {
+	font-weight: bold;
 }
 
 .watchlist-counts {

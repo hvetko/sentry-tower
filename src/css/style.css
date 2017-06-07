@@ -48,3 +48,11 @@ footer {
 .clear {
 	clear: both;
 }
+
+.text-right {
+	text-align: right;
+}
+
+.text-hyperlinked {
+	cursor: pointer;
+}

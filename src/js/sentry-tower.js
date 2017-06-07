@@ -1,13 +1,8 @@
 var SentryTower = SentryTower || {};
 
 SentryTower.APIHandler = {
-	storage: null,
 	watchUrls: [],
 	apiVersionURL: '/api/0/',
-
-	init: function () {
-		this.storage = SentryTower.storageHandler;
-	},
 
 	/**
 	 * Run API requests
@@ -15,7 +10,8 @@ SentryTower.APIHandler = {
 	run: function () {
 		var self = this;
 
-		self.storage.storage.get(['sentryQueries'], function (result) {
+		SentryTower.storageHandler.storage.get(['sentryQueries'], function (result) {
+			console.log('get queries');
 			var watchUrls = result.sentryQueries;
 
 			if (watchUrls.length > 0) {
@@ -34,7 +30,7 @@ SentryTower.APIHandler = {
 	apiRequest: function (query) {
 		var self = this;
 		var queryURL = query.apiUrl;
-		console.log(queryURL);
+		console.log('request', queryURL);
 
 		$.ajax({
 			url: queryURL,
@@ -45,7 +41,7 @@ SentryTower.APIHandler = {
 				self.processError();
 			},
 			success: function (responseData) {
-				self.storage.setResult(query, responseData);
+				SentryTower.storageHandler.setResult(query, responseData);
 			},
 			type: 'GET'
 		});
@@ -127,6 +123,8 @@ SentryTower.storageHandler = {
 			return arr;
 		}
 
+		var self = this;
+
 		var queryUrl = query.apiUrl;
 		var queryProject = query.project;
 		var newUnreadIds = [];
@@ -137,13 +135,16 @@ SentryTower.storageHandler = {
 				if (value.hasSeen === false) {
 					unreadCount++;
 					newUnreadIds.push(value.id);
+				} else {
+					var elementIndex = self.unreadIds.indexOf(value.id);
+					if (elementIndex > -1) {
+						self.unreadIds.splice(elementIndex, 1);
+					}
 				}
 			});
 
 			newUnreadIds = uniqueArray(newUnreadIds);
-
 			var intersect = arrayIntersect(this.unreadIds, newUnreadIds);
-			// console.log('----unreads', intersect.length);
 			this.showNewUnreadErrorNotification(intersect);
 			this.unreadIds = uniqueArray(this.unreadIds.concat(newUnreadIds));
 		}
@@ -159,14 +160,10 @@ SentryTower.storageHandler = {
 			query: query
 		};
 
-		// console.log('total: ', this.unreadIds.length);
-		// console.log(this.unreadIds);
-		console.log(this.results);
 		this.storage.set({results: this.results});
 		this.storage.set({unreadIds: this.unreadIds});
 
-		var background = SentryTower.backgroundHandler;
-		background.updateBadge();
+		SentryTower.backgroundHandler.updateBadge(true);
 	},
 
 	showNewUnreadErrorNotification: function (errorIdArray) {
@@ -183,3 +180,24 @@ SentryTower.storageHandler = {
 	}
 };
 
+SentryTower.logger = {
+	addToLog: function (type, message) {
+		var dateKey = new Date;
+		SentryTower.storageHandler.storage.get(['log'], function (items) {
+			items.log[dateKey] = '[' + type + '] ' + message;
+			SentryTower.storageHandler.storage.set({log: items.log});
+		});
+	},
+
+	emptyLog: function () {
+		SentryTower.storageHandler.storage.set({log: {}});
+	},
+
+	error: function (message) {
+		this.addToLog('ERROR', message);
+	},
+
+	info: function (message) {
+		this.addToLog('INFO', message);
+	}
+};

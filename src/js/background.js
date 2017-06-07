@@ -1,46 +1,49 @@
 var SentryTower = SentryTower || {};
 
 SentryTower.backgroundHandler = {
-	storage: null,
 	colorUnread: 'red',
 	colorRead: 'blue',
-
-	init: function () {
-		this.storage = SentryTower.storageHandler;
-		this.storage.init();
-	},
 
 	/**
 	 * Run background tasks
 	 */
 	run: function () {
-		this.updateBadge();
-		var client = SentryTower.APIHandler;
-		client.init();
-		client.run();
+		SentryTower.storageHandler.storage.get(['isTowerRunning'], function (results) {
+			if (results.isTowerRunning) {
+				SentryTower.backgroundHandler.updateBadge(true);
+				SentryTower.APIHandler.run();
+			} else {
+				SentryTower.backgroundHandler.updateBadge(false);
+			}
+		});
 	},
 
 	/**
 	 * Updates badge count to number from storage
 	 */
-	updateBadge: function () {
-		var self = this;
-		this.enableIcon();
+	updateBadge: function (isTowerRunning) {
+		if (isTowerRunning) {
+			this.enableIcon();
 
-		this.storage.storage.get(['unreadIds', 'results'], function (results) {
-			if (results.unreadIds && results.unreadIds.length > 0) {
-				chrome.browserAction.setBadgeText({text: results.unreadIds.length.toString()});
-				chrome.browserAction.setBadgeBackgroundColor({color: self.colorUnread});
-			} else {
-				var readCount = 0;
-				$.each(results.results, function (query, result) {
-					readCount += (result.count - result.unreadCount);
-				});
+			SentryTower.storageHandler.storage.get(['unreadIds', 'results'], function (results) {
+				if (results.unreadIds && results.unreadIds.length > 0) {
+					chrome.browserAction.setBadgeText({text: results.unreadIds.length.toString()});
+					chrome.browserAction.setBadgeBackgroundColor({color: SentryTower.backgroundHandler.colorUnread});
+				} else {
+					var readCount = 0;
+					$.each(results.results, function (queryProject, queryResults) {
+						$.each(queryResults, function (index, result) {
+							readCount += (parseInt(result.count) - parseInt(result.unreadCount));
+						});
+					});
 
-				chrome.browserAction.setBadgeText({text: readCount.toString()});
-				chrome.browserAction.setBadgeBackgroundColor({color: self.colorRead});
-			}
-		});
+					chrome.browserAction.setBadgeText({text: readCount.toString()});
+					chrome.browserAction.setBadgeBackgroundColor({color: SentryTower.backgroundHandler.colorRead});
+				}
+			});
+		} else {
+			this.disableIcon();
+		}
 	},
 
 	/**
@@ -61,29 +64,15 @@ SentryTower.backgroundHandler = {
 
 
 $(document).ready(function () {
-	var background = SentryTower.backgroundHandler;
-	background.init();
+	SentryTower.backgroundHandler.run();
 
-	function runSentryTower() {
-		if (background.storage.isRunning) {
-			background.run();
-		} else {
-			background.disableIcon();
-		}
-
-		//TODO: remove once switch is activated
-		background.run();
-	}
-
-	runSentryTower();
-
-	background.storage.storage.get(['sentryOptions'], function (result) {
+	SentryTower.storageHandler.storage.get(['sentryOptions'], function (result) {
 		var interval = 60000;
 
 		if (result.sentryOptions.sentryCheckInterval) {
 			interval = result.sentryOptions.sentryCheckInterval;
 		}
 
-		window.setInterval(runSentryTower, interval);
+		window.setInterval(SentryTower.backgroundHandler.run, interval);
 	});
 });

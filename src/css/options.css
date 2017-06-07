@@ -122,3 +122,11 @@ p {
 .gray {
 	color: #999999;
 }
+
+#log {
+	border: 1px solid #999999;
+	background-color: #F2F2F2;
+	padding: 20px;
+	font-size: 12px;
+	margin: 10px 0 20px 0;
+}

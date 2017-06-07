@@ -2,14 +2,13 @@ var SentryTower = SentryTower || {};
 
 SentryTower.Options = {
 	storage: null,
+	logger: null,
 	sentryUrl: null,
 
 	init: function () {
 		var self = this;
-		self.storage = SentryTower.storageHandler;
-		self.storage.init();
-
-		self.storage.storage.get(['sentryOptions'], function (result) {
+		
+		SentryTower.storageHandler.storage.get(['sentryOptions'], function (result) {
 			self.sentryUrl = result.sentryOptions.sentryUrl;
 		});
 	},
@@ -20,16 +19,21 @@ SentryTower.Options = {
 	saveOptions: function () {
 		var self = this;
 		var options = {
-			sentryToken: document.getElementById('sentry-api-token').value,
+			sentryToken: $('#sentry-api-token').val(),
 			//TODO: trim /
-			sentryUrl: document.getElementById('sentry-url').value,
-			sentryCheckInterval: document.getElementById('sentry-check-interval').value * 1000 // Converting to milliseconds
+			sentryUrl: $('#sentry-url').val(),
+			sentryCheckInterval: $('#sentry-check-interval').val() * 1000, // Converting to milliseconds
+			isLogEnabled: $('#enable-log').is(':checked')
 		};
 
-		this.storage.storage.set({
-			sentryOptions: options
+		SentryTower.storageHandler.storage.set({
+			sentryOptions: options,
+			isTowerRunning: $('#is-running').is(':checked')
 		}, function () {
 			self.showMessage('Saved');
+			console.log($('#enable-log').is(':checked'));
+
+			self.logger.info('Saved options');
 		});
 	},
 
@@ -43,12 +47,15 @@ SentryTower.Options = {
 		$('#sentry-project-organization').empty();
 		$('#sentry-query-project').empty();
 		$('#sentry-queries').empty();
-		this.storage.storage.get(['sentryOptions', 'sentryProjects', 'sentryOrganizations', 'sentryQueries'], function (items) {
+		SentryTower.storageHandler.storage.get(['isTowerRunning', 'sentryOptions', 'sentryProjects', 'sentryOrganizations', 'sentryQueries', 'log'], function (items) {
 			if (items.sentryOptions) {
-				document.getElementById('sentry-api-token').value = items.sentryOptions.sentryToken;
-				document.getElementById('sentry-url').value = items.sentryOptions.sentryUrl;
-				document.getElementById('sentry-check-interval').value = items.sentryOptions.sentryCheckInterval / 1000; // Converting from milliseconds
+				$('#sentry-api-token').val(items.sentryOptions.sentryToken);
+				$('#sentry-url').val(items.sentryOptions.sentryUrl);
+				$('#sentry-check-interval').val(items.sentryOptions.sentryCheckInterval / 1000); // Converting from milliseconds
+				$('#enable-log').prop('checked', items.sentryOptions.isLogEnabled);
 			}
+
+			$('#is-running').prop('checked', items.isTowerRunning);
 
 			$.each(items.sentryOrganizations, function (index, organizationName) {
 				self.addNewOrganizationToLists(organizationName);
@@ -61,6 +68,11 @@ SentryTower.Options = {
 			$.each(items.sentryQueries, function (index, query) {
 				self.addNewQueryToLists(query);
 			});
+
+			if (Object.keys(items.log).length > 2) {
+				$('#log-warning').show();
+				$('#log-counter').text(Object.keys(items.log).length);
+			}
 		});
 	},
 
@@ -76,14 +88,14 @@ SentryTower.Options = {
 		var newOrganizationName = $('#sentry-organization').val().trim();
 
 		if (newOrganizationName) {
-			this.storage.storage.get(['sentryOrganizations'], function (items) {
+			SentryTower.storageHandler.storage.get(['sentryOrganizations'], function (items) {
 				var organizations = [];
 				if (items.sentryOrganizations) {
 					organizations = items.sentryOrganizations;
 				}
 
 				organizations.push(newOrganizationName);
-				self.storage.storage.set({sentryOrganizations: organizations});
+				SentryTower.storageHandler.storage.set({sentryOrganizations: organizations});
 				self.addNewOrganizationToLists(newOrganizationName);
 				self.showMessage('Organization is saved.');
 				self.toggleDivs('sentry-existing-organizations', 'new-organization');
@@ -124,7 +136,7 @@ SentryTower.Options = {
 	 */
 	deleteOrganization: function (organizationName) {
 		var self = this;
-		this.storage.storage.get(['sentryOrganizations'], function (items) {
+		SentryTower.storageHandler.storage.get(['sentryOrganizations'], function (items) {
 			var organizations = [];
 
 			$.each(items.sentryOrganizations, function (index, organization) {
@@ -133,7 +145,7 @@ SentryTower.Options = {
 				}
 			});
 
-			self.storage.storage.set({sentryOrganizations: organizations});
+			SentryTower.storageHandler.storage.set({sentryOrganizations: organizations});
 			self.restoreOptions();
 		});
 	},
@@ -152,14 +164,14 @@ SentryTower.Options = {
 
 		if (newProjectName) {
 			newProjectName = organizationName + '/' + newProjectName;
-			this.storage.storage.get(['sentryProjects'], function (items) {
+			SentryTower.storageHandler.storage.get(['sentryProjects'], function (items) {
 				var projects = [];
 				if (items.sentryProjects) {
 					projects = items.sentryProjects;
 				}
 
 				projects.push(newProjectName);
-				self.storage.storage.set({sentryProjects: projects});
+				SentryTower.storageHandler.storage.set({sentryProjects: projects});
 				self.addNewProjectToLists(newProjectName);
 				self.showMessage('Project is saved.');
 				self.toggleDivs('sentry-existing-projects', 'new-project');
@@ -200,7 +212,7 @@ SentryTower.Options = {
 	 */
 	deleteProject: function (projectName) {
 		var self = this;
-		this.storage.storage.get(['sentryProjects'], function (items) {
+		SentryTower.storageHandler.storage.get(['sentryProjects'], function (items) {
 			var projects = [];
 
 			$.each(items.sentryProjects, function (index, project) {
@@ -209,7 +221,7 @@ SentryTower.Options = {
 				}
 			});
 
-			self.storage.storage.set({sentryProjects: projects});
+			SentryTower.storageHandler.storage.set({sentryProjects: projects});
 			self.restoreOptions();
 		});
 	},
@@ -249,14 +261,14 @@ SentryTower.Options = {
 		newQuery.url = url;
 
 		if (newQuery.query) {
-			this.storage.storage.get(['sentryQueries'], function (items) {
+			SentryTower.storageHandler.storage.get(['sentryQueries'], function (items) {
 				var queries = [];
 				if (items.sentryQueries) {
 					queries = items.sentryQueries;
 				}
 
 				queries.push(newQuery);
-				self.storage.storage.set({sentryQueries: queries});
+				SentryTower.storageHandler.storage.set({sentryQueries: queries});
 				self.addNewQueryToLists(newQuery);
 				self.showMessage('Query is saved.');
 				self.toggleDivs('sentry-existing-queries', 'new-query');
@@ -301,7 +313,7 @@ SentryTower.Options = {
 	 */
 	deleteQuery: function (queryText) {
 		var self = this;
-		this.storage.storage.get(['sentryQueries'], function (items) {
+		SentryTower.storageHandler.storage.get(['sentryQueries'], function (items) {
 			var queries = [];
 
 			$.each(items.sentryQueries, function (index, query) {
@@ -310,9 +322,34 @@ SentryTower.Options = {
 				}
 			});
 
-			self.storage.storage.set({sentryQueries: queries});
+			SentryTower.storageHandler.storage.set({sentryQueries: queries});
 			self.restoreOptions();
 		});
+	},
+
+	/*************************************************
+	 * Log
+	 *************************************************/
+
+	refreshLog: function () {
+		SentryTower.storageHandler.storage.get(['log'], function (items) {
+			var logDiv = $('#log');
+			logDiv.empty();
+
+			if (Object.keys(items.log).length > 0) {
+				$.each(items.log, function (index, query) {
+					var logText = logDiv.html();
+					logDiv.html(logText + index + ' - ' + query + '<br/>');
+				});
+			} else {
+				logDiv.text('Nothing here for now...');
+			}
+		});
+	},
+
+	emptyLog: function () {
+		SentryTower.logger.emptyLog();
+		this.refreshLog();
 	},
 
 	/*************************************************
@@ -375,6 +412,14 @@ $('#new-project-save').click(function () {
 
 $('#new-query-save').click(function () {
 	SentryTower.Options.saveNewQuery();
+});
+
+$('#show-log').click(function () {
+	SentryTower.Options.refreshLog();
+});
+
+$('#empty-log').click(function () {
+	SentryTower.Options.emptyLog();
 });
 
 $(document).ready(function () {
