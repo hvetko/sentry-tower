@@ -68,7 +68,7 @@ SentryTower.popupHandler = {
 					projectCnt++;
 				});
 			} else {
-				//TODO: show msg
+				SentryTower.errorHandler.error('Empty response from API');
 			}
 		});
 	},
@@ -95,6 +95,8 @@ SentryTower.popupHandler = {
 	}
 
 };
+
+// chrome.runtime.sendMessage({popupOpen: false});
 
 var popup = SentryTower.popupHandler;
 document.addEventListener('DOMContentLoaded', popup.setWatchList());

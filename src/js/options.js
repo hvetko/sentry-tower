@@ -27,8 +27,7 @@ SentryTower.Options = {
 		};
 
 		SentryTower.storageHandler.storage.set({
-			sentryOptions: options,
-			isTowerRunning: $('#is-running').is(':checked')
+			sentryOptions: options
 		}, function () {
 			self.showMessage('Saved');
 			console.log($('#enable-log').is(':checked'));
@@ -47,15 +46,13 @@ SentryTower.Options = {
 		$('#sentry-project-organization').empty();
 		$('#sentry-query-project').empty();
 		$('#sentry-queries').empty();
-		SentryTower.storageHandler.storage.get(['isTowerRunning', 'sentryOptions', 'sentryProjects', 'sentryOrganizations', 'sentryQueries', 'log'], function (items) {
+		SentryTower.storageHandler.storage.get(['sentryOptions', 'sentryProjects', 'sentryOrganizations', 'sentryQueries', 'log'], function (items) {
 			if (items.sentryOptions) {
 				$('#sentry-api-token').val(items.sentryOptions.sentryToken);
 				$('#sentry-url').val(items.sentryOptions.sentryUrl);
 				$('#sentry-check-interval').val(items.sentryOptions.sentryCheckInterval / 1000); // Converting from milliseconds
 				$('#enable-log').prop('checked', items.sentryOptions.isLogEnabled);
 			}
-
-			$('#is-running').prop('checked', items.isTowerRunning);
 
 			$.each(items.sentryOrganizations, function (index, organizationName) {
 				self.addNewOrganizationToLists(organizationName);
@@ -69,7 +66,7 @@ SentryTower.Options = {
 				self.addNewQueryToLists(query);
 			});
 
-			if (Object.keys(items.log).length > 2) {
+			if (items.log && Object.keys(items.log).length > 2) {
 				$('#log-warning').show();
 				$('#log-counter').text(Object.keys(items.log).length);
 			}
@@ -238,24 +235,16 @@ SentryTower.Options = {
 
 		var newQuery = {
 			query: $('#sentry-query').val().trim(),
-			project: $('#sentry-query-project').val().trim(),
-			status: $('#sentry-query-status').val().trim(),
-			assigned: $('#sentry-query-assigned-me:checked').length > 0
+			project: $('#sentry-query-project').val().trim()
 		};
 
-		console.log(self.sentryUrl);
 		if (!self.sentryUrl) {
 			// TODO: process error
 			// TODO: warning. prevent saving without URL
 		}
 
-		var apiUrl = self.sentryUrl + '/api/0/projects/' + newQuery.project + '/issues/?query=is%3A' + newQuery.status + '+' + encodeURIComponent(newQuery.query).replace(/%20/g, '+');
-		var url = self.sentryUrl + '/' + newQuery.project + '/?query=is%3A' + newQuery.status + '+' + encodeURIComponent(newQuery.query).replace(/%20/g, '+');
-
-		if (newQuery.assigned) {
-			apiUrl += '+assigned%3Ame';
-			url += '+assigned%3Ame';
-		}
+		var apiUrl = self.sentryUrl + '/api/0/projects/' + newQuery.project + '/issues/?query=' + encodeURIComponent(newQuery.query).replace(/%20/g, '+');
+		var url = self.sentryUrl + '/' + newQuery.project + '/?query=' + encodeURIComponent(newQuery.query).replace(/%20/g, '+');
 
 		newQuery.apiUrl = apiUrl;
 		newQuery.url = url;
@@ -288,13 +277,7 @@ SentryTower.Options = {
 	 */
 	addNewQueryToLists: function (query) {
 		var self = this;
-		var queryText = '<span class="gray">[' + query.project + ']</span> ';
-		queryText += query.query;
-		queryText += ' <span class="gray">(' + query.status;
-		if (query.assigned) {
-			queryText += ', assigned to me';
-		}
-		queryText += ')</span>';
+		var queryText = '<span class="gray">[' + query.project + ']</span> ' + query.query + '</span>';
 
 		$('#sentry-queries').append(
 			$('<li>').append(
@@ -313,16 +296,31 @@ SentryTower.Options = {
 	 */
 	deleteQuery: function (queryText) {
 		var self = this;
-		SentryTower.storageHandler.storage.get(['sentryQueries'], function (items) {
-			var queries = [];
+		SentryTower.storageHandler.storage.get(['sentryQueries', 'results'], function (items) {
+			var cleanedQueries = [];
+			var cleanedResults = {};
 
 			$.each(items.sentryQueries, function (index, query) {
 				if (queryText !== query.query) {
-					queries.push(query);
+					cleanedQueries.push(query);
 				}
 			});
 
-			SentryTower.storageHandler.storage.set({sentryQueries: queries});
+			$.each(items.results, function (project, results) {
+				var cleanedResult = {};
+				$.each(results, function (queryURL, result) {
+					if (queryText !== result.query.query) {
+						cleanedResult[queryURL] = result;
+					}
+				});
+				cleanedResults[project] = cleanedResult;
+			});
+
+			SentryTower.storageHandler.storage.set({
+				sentryQueries: cleanedQueries,
+				results: cleanedResults
+			});
+
 			self.restoreOptions();
 		});
 	},

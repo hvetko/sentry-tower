@@ -1,5 +1,9 @@
 var SentryTower = SentryTower || {};
 
+if (typeof disableNotifications != 'undefined') {
+	console.log('disableNotifications', disableNotifications);
+}
+
 SentryTower.APIHandler = {
 	watchUrls: [],
 	apiVersionURL: '/api/0/',
@@ -11,7 +15,6 @@ SentryTower.APIHandler = {
 		var self = this;
 
 		SentryTower.storageHandler.storage.get(['sentryQueries'], function (result) {
-			console.log('get queries');
 			var watchUrls = result.sentryQueries;
 
 			if (watchUrls.length > 0) {
@@ -28,17 +31,16 @@ SentryTower.APIHandler = {
 	 * @param query
 	 */
 	apiRequest: function (query) {
+		console.log('---', query.query);
 		var self = this;
-		var queryURL = query.apiUrl;
-		console.log('request', queryURL);
 
 		$.ajax({
-			url: queryURL,
+			url: query.apiUrl,
 			data: {
 				format: 'json'
 			},
-			error: function () {
-				self.processError();
+			error: function (responseData) {
+				self.processError(responseData);
 			},
 			success: function (responseData) {
 				SentryTower.storageHandler.setResult(query, responseData);
@@ -49,14 +51,12 @@ SentryTower.APIHandler = {
 
 	/**
 	 * Process API request error
-	 * TODO
 	 *
-	 * @param msg
+	 * @param data
 	 */
-	processError: function (msg) {
-		console.error('ERROR:', msg);
+	processError: function (data) {
+		SentryTower.errorHandler.error('API request failed', data);
 	}
-
 };
 
 SentryTower.storageHandler = {
@@ -66,13 +66,8 @@ SentryTower.storageHandler = {
 	results: {},
 
 	init: function () {
-		this.storage.get(['isRunning', 'unreadIds'], function (result) {
+		this.storage.get(['isRunning'], function (result) {
 			this.isRunning = !!(result.isRunning);
-			if (result.unreadIds && result.unreadIds.length > 0) {
-				this.unreadIds = result.unreadIds;
-			} else {
-				this.unreadIds = [];
-			}
 		});
 	},
 
@@ -127,7 +122,9 @@ SentryTower.storageHandler = {
 
 		var queryUrl = query.apiUrl;
 		var queryProject = query.project;
+		var intersect = [];
 		var newUnreadIds = [];
+		var unreadMap = {};
 		var unreadCount = 0;
 
 		if (data.length) {
@@ -135,6 +132,8 @@ SentryTower.storageHandler = {
 				if (value.hasSeen === false) {
 					unreadCount++;
 					newUnreadIds.push(value.id);
+
+					unreadMap[value.id] = query.query;
 				} else {
 					var elementIndex = self.unreadIds.indexOf(value.id);
 					if (elementIndex > -1) {
@@ -144,11 +143,12 @@ SentryTower.storageHandler = {
 			});
 
 			newUnreadIds = uniqueArray(newUnreadIds);
-			var intersect = arrayIntersect(this.unreadIds, newUnreadIds);
-			this.showNewUnreadErrorNotification(intersect);
-			this.unreadIds = uniqueArray(this.unreadIds.concat(newUnreadIds));
+			intersect = arrayIntersect(this.unreadIds, newUnreadIds);
+			//TODO: refactor notification to be grouped by query
+			SentryTower.notificationHandler.showNewUnreadErrorNotification(intersect, unreadMap);
 		}
 
+		//TODO: remove deleted queries
 		if (!this.results[queryProject]) {
 			this.results[queryProject] = {};
 		}
@@ -161,22 +161,45 @@ SentryTower.storageHandler = {
 		};
 
 		this.storage.set({results: this.results});
-		this.storage.set({unreadIds: this.unreadIds});
 
 		SentryTower.backgroundHandler.updateBadge(true);
-	},
+	}
+};
 
-	showNewUnreadErrorNotification: function (errorIdArray) {
-		var errorCount = errorIdArray.length;
-		if (errorCount > 0) {
-			chrome.notifications.create('reminder', {
-				type: 'basic',
-				iconUrl: '../img/tower.png',
-				title: 'Sentry Tower Alert!',
-				message: 'Found ' + errorCount + ' new errors.'
-			}, function (notificationId) {
+SentryTower.notificationHandler = {
+	showNewUnreadErrorNotification: function (errorIdArray, unreadMap) {
+		var showNotification = true;
+		if (typeof stopNotification !== 'undefined' && stopNotification === true) {
+			showNotification = false;
+			console.log('provera', stopNotification);
+		}
+
+		if (showNotification) {
+			$.each(errorIdArray, function (key, errorId) {
+				chrome.notifications.create({
+					type: 'basic',
+					iconUrl: '../img/tower.png',
+					title: 'Sentry Tower Alert!',
+					message: 'Found error for query:\n"' + unreadMap[errorId] + '"'
+				});
 			});
 		}
+	}
+};
+
+SentryTower.errorHandler = {
+	error: function (msg, data) {
+		if (!data) {
+			data = '';
+		}
+
+		console.error('ERROR >>> ' + msg, data);
+		this.stacktrace();
+		SentryTower.logger.error(msg + JSON.stringify(data));
+	},
+
+	stacktrace: function () {
+		console.error(new Error().stack);
 	}
 };
 

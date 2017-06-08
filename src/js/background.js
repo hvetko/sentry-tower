@@ -25,18 +25,28 @@ SentryTower.backgroundHandler = {
 		if (isTowerRunning) {
 			this.enableIcon();
 
-			SentryTower.storageHandler.storage.get(['unreadIds', 'results'], function (results) {
-				if (results.unreadIds && results.unreadIds.length > 0) {
-					chrome.browserAction.setBadgeText({text: results.unreadIds.length.toString()});
-					chrome.browserAction.setBadgeBackgroundColor({color: SentryTower.backgroundHandler.colorUnread});
-				} else {
-					var readCount = 0;
-					$.each(results.results, function (queryProject, queryResults) {
-						$.each(queryResults, function (index, result) {
-							readCount += (parseInt(result.count) - parseInt(result.unreadCount));
+			SentryTower.storageHandler.storage.get(['results'], function (storageResults) {
+				var unreadCount = 0;
+				var readCount = 0;
+
+				console.log(storageResults.results);
+
+				$.each(storageResults.results, function (i, resultsPerProject) {
+					$.each(resultsPerProject, function (project, projectResults) {
+						$.each(projectResults.data, function (i, result) {
+							if(result.hasSeen) {
+								readCount++;
+							} else {
+								unreadCount++;
+							}
 						});
 					});
+				});
 
+				if (unreadCount > 0) {
+					chrome.browserAction.setBadgeText({text: unreadCount.toString()});
+					chrome.browserAction.setBadgeBackgroundColor({color: SentryTower.backgroundHandler.colorUnread});
+				} else {
 					chrome.browserAction.setBadgeText({text: readCount.toString()});
 					chrome.browserAction.setBadgeBackgroundColor({color: SentryTower.backgroundHandler.colorRead});
 				}

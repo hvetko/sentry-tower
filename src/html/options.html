@@ -53,10 +53,6 @@
 			<input type="checkbox" id="enable-log"/> <label for="enable-log">Enable logging</label>
 		</section>
 
-		<p>
-			<input type="checkbox" name="is-running" id="is-running" /> <label for="is-running">Run Tower, run!</label>
-		</p>
-
 		<button id="save" class="action action-raised action-big">Save</button>
 	</div>
 
@@ -137,25 +133,8 @@
 					</section>
 
 					<section>
-						<label for="sentry-query-status">Status</label>
-						<select id="sentry-query-status">
-							<option>unresolved</option>
-							<option>resolved</option>
-							<option>ignored</option>
-							<option>assigned</option>
-							<option>unassigned</option>
-						</select>
-					</section>
-
-					<section>
-						<label for="sentry-query-assigned-me">Assigned</label>
-						<input id="sentry-query-assigned-me" type="checkbox" value="me"/>
-						<label for="sentry-query-assigned-me">Me</label>
-					</section>
-
-					<section>
 						<label for="sentry-query">Query</label>
-						<input type="text" id="sentry-query"/>
+						<input type="text" id="sentry-query" placeholder="Add full query here. Example: is:unresolved search_string"/>
 					</section>
 					<span class="action action-raised" data-related="new-query" id="new-query-save">Save</span>
 					<span class="action action-flat toggler-button" data-open="sentry-existing-queries"
