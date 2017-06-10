@@ -1,88 +1,100 @@
-var SentryTower = SentryTower || {};
-
-SentryTower.backgroundHandler = {
-	colorUnread: 'red',
-	colorRead: 'blue',
+function BackgroundHandler() {
 
 	/**
 	 * Run background tasks
+	 *
+	 * //TODO: Too big and too nested. Refactor.
 	 */
-	run: function () {
-		SentryTower.storageHandler.storage.get(['isTowerRunning'], function (results) {
-			if (results.isTowerRunning) {
-				SentryTower.backgroundHandler.updateBadge(true);
-				SentryTower.APIHandler.run();
-			} else {
-				SentryTower.backgroundHandler.updateBadge(false);
-			}
-		});
-	},
+	this.run = function () {
+		chrome.storage.local.get({
+			'isTowerRunning': false,
+			'sentryQueries': [],
+			'alertedIds': []
+		}, function (items) {
+			if (items.isTowerRunning) {
+				chrome.browserAction.setIcon({path: '../img/tower.png'});
 
-	/**
-	 * Updates badge count to number from storage
-	 */
-	updateBadge: function (isTowerRunning) {
-		if (isTowerRunning) {
-			this.enableIcon();
-
-			SentryTower.storageHandler.storage.get(['results'], function (storageResults) {
+				var sentryQueries = items.sentryQueries;
 				var unreadCount = 0;
 				var readCount = 0;
 
-				console.log(storageResults.results);
-
-				$.each(storageResults.results, function (i, resultsPerProject) {
-					$.each(resultsPerProject, function (project, projectResults) {
-						$.each(projectResults.data, function (i, result) {
-							if(result.hasSeen) {
-								readCount++;
-							} else {
-								unreadCount++;
-							}
+				$.each(sentryQueries, function (project, /* Array<Query> */ queries) {
+					$.each(queries, function (text, /* Query */ query) {
+						$.ajax({
+							url: query.queryApiUrl,
+							data: {
+								format: 'json'
+							},
+							error: function (responseData) {
+								self.processError(responseData);
+							},
+							success: function (responseData) {
+								sentryQueries[project][text]['results'] = responseData;
+								chrome.storage.local.set({sentryQueries: sentryQueries});
+							},
+							type: 'GET'
 						});
+
+						var alertedIds = items.alertedIds;
+						if (query.results) {
+							var showNotification = false;
+							$.each(query.results, function (i, result) {
+								if (result.hasSeen) {
+									readCount++;
+								} else {
+									unreadCount++;
+
+									if (alertedIds.indexOf(result.id) < 0) {
+										alertedIds.push(result.id);
+										showNotification = true;
+									}
+								}
+							});
+
+							if (unreadCount > 0) {
+								chrome.browserAction.setBadgeText({text: unreadCount.toString()});
+								chrome.browserAction.setBadgeBackgroundColor({color: 'red'});
+
+								var notificationMessage = 'Found ' + unreadCount;
+								notificationMessage += (unreadCount.toString().split('').pop() === '1') ? ' error' : ' errors';
+								if (showNotification) {
+									chrome.notifications.create({
+										type: 'basic',
+										iconUrl: '../img/tower.png',
+										title: 'Sentry Tower Alert!',
+										message: notificationMessage
+									});
+								}
+							} else {
+								chrome.browserAction.setBadgeText({text: readCount.toString()});
+								chrome.browserAction.setBadgeBackgroundColor({color: 'blue'});
+							}
+						}
+
+						chrome.storage.local.set({alertedIds: alertedIds});
 					});
 				});
 
-				if (unreadCount > 0) {
-					chrome.browserAction.setBadgeText({text: unreadCount.toString()});
-					chrome.browserAction.setBadgeBackgroundColor({color: SentryTower.backgroundHandler.colorUnread});
-				} else {
-					chrome.browserAction.setBadgeText({text: readCount.toString()});
-					chrome.browserAction.setBadgeBackgroundColor({color: SentryTower.backgroundHandler.colorRead});
-				}
-			});
-		} else {
-			this.disableIcon();
-		}
-	},
-
-	/**
-	 * Disable browser icon button
-	 */
-	disableIcon: function () {
-		chrome.browserAction.setBadgeText({text: ''});
-		chrome.browserAction.setIcon({path: '../img/tower-off.png'});
-	},
-
-	/**
-	 * Enable browser icon button
-	 */
-	enableIcon: function () {
-		chrome.browserAction.setIcon({path: '../img/tower.png'});
-	}
-};
+			} else {
+				chrome.browserAction.setBadgeText({text: ''});
+				chrome.browserAction.setIcon({path: '../img/tower-off.png'});
+			}
+		});
+	};
+}
 
 
 $(document).ready(function () {
-	SentryTower.backgroundHandler.run();
+	var interval = 60000;
+	var background = new BackgroundHandler();
 
-	SentryTower.storageHandler.storage.get(['sentryOptions'], function (result) {
-		var interval = 60000;
+	background.run();
 
-		if (result.sentryOptions.sentryCheckInterval) {
-			interval = result.sentryOptions.sentryCheckInterval;
+	chrome.storage.local.get(['sentryOptions'], function (results) {
+		if (results.sentryOptions.sentryCheckInterval) {
+			interval = results.sentryOptions.sentryCheckInterval;
 		}
 
-		window.setInterval(SentryTower.backgroundHandler.run, interval);
+		window.setInterval(background.run, interval);
 	});
 });

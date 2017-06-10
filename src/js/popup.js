@@ -1,21 +1,28 @@
-var SentryTower = SentryTower || {};
+function Popup() {
 
-SentryTower.popupHandler = {
-
-	formatLargeCounts: function (count) {
+	this.formatLargeCounts = function (count) {
 		return (count > 999) ? '1k+' : count;
-	},
+	};
 
 	/**
 	 * Add single result to watchlist
 	 *
 	 * @param query
-	 * @param unseenCount
-	 * @param seenCount
 	 * @param listIdentifier
 	 */
-	addWatchlistItem: function (query, unseenCount, seenCount, listIdentifier) {
+	this.addWatchlistItem = function (query, listIdentifier) {
 		var watchlist = $('#' + listIdentifier);
+		var unseenCount = 0;
+		var seenCount = 0;
+		var results = query.results;
+
+		$.each(results, function (i, result) {
+			if (result.hasSeen) {
+				seenCount++;
+			} else {
+				unseenCount++;
+			}
+		});
 
 		watchlist.append(
 			$('<div>').attr('class', (unseenCount > 0) ? 'watchlist-row watchlist-row-unseen' : 'watchlist-row').append(
@@ -29,76 +36,65 @@ SentryTower.popupHandler = {
 			).append(
 				$('<div>').attr('class', 'watchlist-query-details').append(
 					$('<div>').attr('class', 'watchlist-query').append(
-						$('<a>').attr('href', query.url).attr('target', '_blank').text(query.query)
+						$('<a>').attr('href', query.queryUrl).attr('target', '_blank').text(query.text)
 					)
 				)
 			).append(
 				$('<div>').attr('class', 'clear')
 			)
 		);
-	},
+	};
 
 	/**
 	 * Create fresh watchlist based on results from storage.
 	 * List of results is grouped by project first.
 	 */
-	setWatchList: function () {
-		SentryTower.storageHandler.storage.get(['results', 'isTowerRunning'], function (results) {
-			$('#is-running').prop('checked', results.isTowerRunning);
+	this.setWatchList = function () {
+		var self = this;
+		chrome.storage.local.get(['sentryQueries', 'isTowerRunning'], function (items) {
+			$('#is-running').prop('checked', items.isTowerRunning);
 
 			var watchlist = $('#watchlist');
 			watchlist.empty();
 
-			if (!$.isEmptyObject(results.results)) {
-				var projectCnt = 1;
-				$.each(results.results, function (projectName, queryObject) {
-					watchlist.append(
-						$('<h3>').text(projectName)
-					).append(
-						$('<ul>').attr('id', 'project-' + projectCnt).attr('class', 'watchlist')
-					);
+			var projectCntId = 0;
+			$.each(items.sentryQueries, function (project, queries) {
+				watchlist.append(
+					$('<h3>').text(project)
+				).append(
+					$('<div>').attr('id', 'project-' + projectCntId).attr('class', 'watchlist')
+				);
 
-					$.each(queryObject, function (queryUrl, result) {
-						var unseenCount = SentryTower.popupHandler.formatLargeCounts(result.unreadCount);
-						var seenCount = (result.count - result.unreadCount);
-
-						SentryTower.popupHandler.addWatchlistItem(result.query, unseenCount, seenCount, 'project-' + projectCnt);
-					});
-
-					projectCnt++;
+				$.each(queries, function (queryText, query) {
+					self.addWatchlistItem(query, 'project-' + projectCntId);
 				});
-			} else {
-				SentryTower.errorHandler.error('Empty response from API');
-			}
+				projectCntId++;
+			});
 		});
-	},
+	};
 
 	/**
 	 * Helper function to open Options page
 	 */
-	openOptionsPage: function () {
+	this.openOptionsPage = function () {
 		window.open(chrome.extension.getURL("html/options.html"), '_blank');
-	},
+	};
 
 	/**
 	 * Toggle Tower' ON/OFF switch
 	 */
-	toggleRunningState: function () {
-		SentryTower.storageHandler.storage.get(['isTowerRunning'], function (results) {
-			var newState = !results.isTowerRunning;
-			SentryTower.storageHandler.storage.set({
-				isTowerRunning: !results.isTowerRunning
+	this.toggleRunningState = function () {
+		chrome.storage.local.get(['isTowerRunning'], function (items) {
+			chrome.storage.local.set({
+				isTowerRunning: !items.isTowerRunning
 			}, function () {
-				SentryTower.backgroundHandler.updateBadge(newState);
+				//TODO: trigger background run?
 			});
 		});
-	}
+	};
+}
 
-};
-
-// chrome.runtime.sendMessage({popupOpen: false});
-
-var popup = SentryTower.popupHandler;
+var popup = new Popup();
 document.addEventListener('DOMContentLoaded', popup.setWatchList());
 
 $('#option-link').click(function () {

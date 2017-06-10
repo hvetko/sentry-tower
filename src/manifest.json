@@ -2,7 +2,6 @@
 	"background": {
 		"scripts": [
 			"js/jquery-3.2.1.min.js",
-			"js/sentry-tower.js",
 			"js/background.js"
 		]
 	},

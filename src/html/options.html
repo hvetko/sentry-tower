@@ -49,15 +49,10 @@
 			<input type="number" id="sentry-check-interval" placeholder="Check interval (seconds)"/>
 		</section>
 
-		<section>
-			<input type="checkbox" id="enable-log"/> <label for="enable-log">Enable logging</label>
-		</section>
-
 		<button id="save" class="action action-raised action-big">Save</button>
 	</div>
 
 	<div class="options-divider">
-
 		<h2>Querying Settings</h2>
 
 		<section>
@@ -144,30 +139,12 @@
 		</section>
 	</div>
 
-	<div class="options-divider">
-		<section>
-			<h2>Log</h2>
-			<div id="log-warning" class="warning-box" style="display: none">Log contains <strong><span
-					id="log-counter"></span></strong> items! Consider clearing or disabling logging.
-			</div>
-
-			<section>
-				<div id="show-log"><span data-related="log-area" class="opener text-hyperlinked">Show log</span></div>
-				<div id="log-area" style="display: none">
-					<div class="action action-flat closer x-button" data-related="log-area">x</div>
-					<div id="log"></div>
-					<div id="empty-log" class="text-hyperlinked text-right">Empty log</div>
-				</div>
-			</section>
-		</section>
-	</div>
-
 </div>
 <footer>
 	Sentry Tower is <a href="#" target="_blank">open source</a>.
 </footer>
 <script src="../js/jquery-3.2.1.min.js"></script>
-<script src="../js/sentry-tower.js"></script>
+<script src="../js/query.model.js"></script>
 <script src="../js/options.js"></script>
 </body>
 </html>

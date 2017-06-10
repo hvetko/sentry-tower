@@ -18,6 +18,7 @@ h3 {
 	overflow: hidden;
 	overflow-y: scroll;
 	max-height: 450px;
+	padding-bottom: 20px;
 }
 
 .watchlist {
@@ -28,6 +29,7 @@ h3 {
 
 .watchlist-row {
 	margin-bottom: 10px;
+	padding-left: 10px;
 }
 
 .watchlist-row-unseen {
