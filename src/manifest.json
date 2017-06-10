@@ -10,7 +10,7 @@
 		"default_popup": "html/popup.html",
 		"default_title": "Sentry Tower"
 	},
-	"description": "Sentry Monitor",
+	"description": "Sentry monitor for Google Chrome",
 	"icons": {
 		"16": "img/tower.png",
 		"48": "img/tower.png",
@@ -18,7 +18,7 @@
 	},
 	"manifest_version": 2,
 	"name": "Sentry Tower",
-	"options_page": "html/options.html",
+	"options_page": "html/settings.html",
 	"permissions": [
 		"storage",
 		"notifications",

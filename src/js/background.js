@@ -98,3 +98,12 @@ $(document).ready(function () {
 		window.setInterval(background.run, interval);
 	});
 });
+
+/**
+ * Open settings page on install
+ */
+chrome.runtime.onInstalled.addListener(function (details) {
+	if (details.reason === "install") {
+		window.open(chrome.extension.getURL("html/settings.html"), '_blank');
+	}
+});

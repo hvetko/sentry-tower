@@ -1,7 +1,8 @@
-h1 {
-	font-size: 200%;
+h1{
+	padding: 50px 0;
+	font-weight: 100;
+	font-size: 300%;
 }
-
 h2 {
 	font-size: 150%;
 }
@@ -44,6 +45,11 @@ section {
 
 p {
 	margin: 10px 0;
+	line-height: 1.5em;
+}
+
+footer {
+	padding: 50px;
 }
 
 .action {
@@ -56,9 +62,10 @@ p {
 }
 
 .action {
-	padding: 2px 5px;
+	padding: 5px 10px;
 	border: 1px solid;
 	border-radius: 3px;
+	font-size: 90%;
 }
 
 .action-flat {
@@ -85,8 +92,12 @@ p {
 
 .options-divider {
 	border-bottom: 1px dashed #999999;
+	padding-bottom: 50px;
+	margin-bottom: 50px;
+}
+
+.toggler-wrapper {
 	padding-bottom: 20px;
-	margin-bottom: 20px;
 }
 
 .removable-list {
@@ -123,10 +134,7 @@ p {
 	color: #999999;
 }
 
-#log {
-	border: 1px solid #999999;
-	background-color: #F2F2F2;
-	padding: 20px;
+.tiny {
 	font-size: 12px;
-	margin: 10px 0 20px 0;
+	color: #999999;
 }

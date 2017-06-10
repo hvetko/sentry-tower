@@ -30,19 +30,34 @@ a {
 	color: #1a5062;
 }
 
+a.super-link {
+	text-decoration: underline;
+}
+
 blockquote {
-	border: 1px solid #999999;
-	background: #F2F2F2;
+	border: 1px solid #cccccc;
+	background: #f7f7f7;
 	padding: 15px;
 	font-size: 80%;
 }
 
 footer {
-	border-top: 1px solid #999999;
+	border-top: 1px solid #cccccc;
+	background: #f7f7f7;
 	padding: 20px;
 	text-align: right;
 	color: #8c8c8c;
 	font-size: 75%;
+}
+
+h1, h2, h3 {
+	color: #4a4a4a;
+	font-weight: 200;
+}
+
+h1 {
+	font-size: 200%;
+	padding-bottom: 20px;
 }
 
 .clear {
@@ -55,4 +70,22 @@ footer {
 
 .text-hyperlinked {
 	cursor: pointer;
+}
+
+.link {
+	cursor: pointer;
+}
+
+.link:hover {
+	color: #4a4a4a;
+}
+
+.icon {
+	height: 16px;
+	vertical-align: text-bottom;
+	opacity: 0.5;
+}
+
+.link:hover .icon {
+	opacity: 0.8;
 }

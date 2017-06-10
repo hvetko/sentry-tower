@@ -76,8 +76,8 @@ function Popup() {
 	/**
 	 * Helper function to open Options page
 	 */
-	this.openOptionsPage = function () {
-		window.open(chrome.extension.getURL("html/options.html"), '_blank');
+	this.openSettingsPage = function () {
+		window.open(chrome.extension.getURL("html/settings.html"), '_blank');
 	};
 
 	/**
@@ -98,7 +98,7 @@ var popup = new Popup();
 document.addEventListener('DOMContentLoaded', popup.setWatchList());
 
 $('#option-link').click(function () {
-	popup.openOptionsPage();
+	popup.openSettingsPage();
 });
 
 $('#is-running').click(function () {

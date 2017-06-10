@@ -1,4 +1,4 @@
-function Options() {
+function Settings() {
 
 	/*************************************************
 	 * Settings
@@ -11,7 +11,6 @@ function Options() {
 		var self = this;
 		var options = {
 			sentryToken: $('#sentry-api-token').val(),
-			//TODO: trim /
 			sentryUrl: $('#sentry-url').val(),
 			sentryCheckInterval: $('#sentry-check-interval').val() * 1000 // Converting to milliseconds
 		};
@@ -21,6 +20,34 @@ function Options() {
 		}, function () {
 			self.showMessage('Saved');
 		});
+	};
+
+	/**
+	 *
+	 *
+	 * @param {String} path1
+	 * @param {String} path2
+	 *
+	 * @returns {String}
+	 */
+	this.getPathJoin = function(path1, path2) {
+		if (path1.charAt(path1.length - 1) !== '/') {
+			path1 += '/';
+		}
+
+		if(!path2) {
+			return path1;
+		}
+
+		if (path2.charAt(0) === '/') {
+			path2 = path2.substring(1);
+		}
+
+		if (path2.charAt(path2.length - 1) !== '/') {
+			path2 += '/';
+		}
+
+		return path1 + path2;
 	};
 
 	/**
@@ -34,6 +61,9 @@ function Options() {
 		$('#sentry-project-organization').empty();
 		$('#sentry-query-project').empty();
 		$('#sentry-queries').empty();
+
+		var manifestData = chrome.runtime.getManifest();
+		$('#version').text('v' + manifestData.version);
 
 		chrome.storage.local.get(['sentryOptions', 'sentryProjects', 'sentryOrganizations', 'sentryQueries'], function (items) {
 			if (items.sentryOptions) {
@@ -221,6 +251,34 @@ function Options() {
 	 *
 	 */
 	this.saveNewQuery = function () {
+		/**
+		 *
+		 * @param {Array<String>} paths
+		 *
+		 * @returns {String}
+		 */
+		function getPath(paths) {
+			var path = '';
+			for (var i = 0; i < paths.length; i++) {
+				var pathElement = paths[i].trim();
+				if (!pathElement) {
+					continue;
+				}
+
+				if (pathElement.charAt(0) === '/') {
+					pathElement = pathElement.substring(1);
+				}
+
+				if ((i+1) !== paths.length && pathElement.charAt(pathElement.length - 1) !== '/') {
+					pathElement += '/';
+				}
+
+				path += pathElement;
+			}
+
+			return path;
+		}
+
 		var self = this;
 
 		var queryText = $('#sentry-query').val().trim();
@@ -242,8 +300,23 @@ function Options() {
 
 		var project = $('#sentry-query-project').val().trim();
 
-		var queryApiUrl = sentryUrl + '/api/0/projects/' + project + '/issues/?query=' + encodeURIComponent(queryText).replace(/%20/g, '+');
-		var queryUrl = sentryUrl + '/' + project + '/?query=' + encodeURIComponent(queryText).replace(/%20/g, '+');
+		// var queryApiUrl = sentryUrl + '/api/0/projects/' + project + '/issues/?query=' + encodeURIComponent(queryText).replace(/%20/g, '+');
+		var queryApiUrl = getPath([
+			sentryUrl,
+			'/api/0/projects/',
+			project,
+			'/issues/?query=',
+			encodeURIComponent(queryText).replace(/%20/g, '+')
+		]);
+		// var queryUrl = sentryUrl + '/' + project + '/?query=' + encodeURIComponent(queryText).replace(/%20/g, '+');
+		var queryUrl = getPath([
+			sentryUrl,
+			project,
+			'/?query=' + encodeURIComponent(queryText).replace(/%20/g, '+')
+		]);
+
+					console.log(queryApiUrl);
+					console.log(queryUrl);
 
 		query.setProject(project);
 		query.setQueryApiUrl(queryApiUrl);
@@ -349,40 +422,40 @@ function Options() {
 	}
 }
 
-var options = new Options();
+var settings = new Settings();
 
 $('.opener').click(function () {
 	var id = $(this).attr('data-related');
-	options.showDiv(id);
+	settings.showDiv(id);
 });
 
 $('.toggler-button').click(function () {
 	var openId = $(this).attr('data-open');
 	var closeId = $(this).attr('data-close');
-	options.toggleDivs(openId, closeId);
+	settings.toggleDivs(openId, closeId);
 });
 
 $('.closer').click(function () {
 	var id = $(this).attr('data-related');
-	options.hideDiv(id);
+	settings.hideDiv(id);
 });
 
 $('#save').click(function () {
-	options.saveOptions();
+	settings.saveOptions();
 });
 
 $('#new-organization-save').click(function () {
-	options.saveNewOrganization();
+	settings.saveNewOrganization();
 });
 
 $('#new-project-save').click(function () {
-	options.saveNewProject();
+	settings.saveNewProject();
 });
 
 $('#new-query-save').click(function () {
-	options.saveNewQuery();
+	settings.saveNewQuery();
 });
 
 $(document).ready(function () {
-	options.restoreOptions();
+	settings.restoreOptions();
 });

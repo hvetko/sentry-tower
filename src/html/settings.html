@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<title>Sentry Tower</title>
 	<link rel="stylesheet" href="../css/style.css" type="text/css">
-	<link rel="stylesheet" href="../css/options.css" type="text/css">
+	<link rel="stylesheet" href="../css/settings.css" type="text/css">
 </head>
 <body>
 <div id="update-msg-rounder">
@@ -12,24 +12,11 @@
 </div>
 
 <div id="options">
-	<h1>Tower</h1>
+	<h1>Sentry Tower <span id="version" class="tiny"></span></h1>
 
 	<div class="options-divider">
-		<p>Save your Sentry settings and queries you want to monitor.</p>
-
-		<p>To see instructions on how to set up Sentry Tower <span data-related="docs"
-																   class="opener action action-flat">click here</span>.
-		</p>
-
-		<blockquote id="docs" style="display: none">
-			<div class="action action-flat closer x-button" data-related="docs">x</div>
-			<h2>Docs</h2>
-			<p><strong>Sentry API Key</strong> - </p>
-			<p>Updated and, possibly, more detailed documentation can be found on the <strong><a href="#"
-																								 target="_blank">GitHub
-				page</a></strong>.</p>
-			<p><span class="action action-flat closer" data-related="docs">Close Docs</span></p>
-		</blockquote>
+		<p>Instructions on how to set up Sentry Tower can be found on
+			<a href="https://github.com/hvetko/sentry-tower/blob/master/instructions.md" target="_blank" class="super-link">Sentry Tower GitHub</a> page.</p>
 	</div>
 
 	<div class="options-divider">
@@ -53,14 +40,14 @@
 	</div>
 
 	<div class="options-divider">
-		<h2>Querying Settings</h2>
+		<h2>Querying</h2>
 
 		<section>
-			<label>Organizations</label>
+			<label><img src="../img/folder.svg" alt="Organizations" class="icon"> Organizations</label>
 			<div class="toggler" id="sentry-existing-organizations">
 				<ul id="sentry-organizations" class="removable-list">
 				</ul>
-				<div class="">
+				<div class="toggler-wrapper">
 					<span class="action action-flat toggler-button" data-open="new-organization"
 						  data-close="sentry-existing-organizations">Add New Organization</span>
 				</div>
@@ -78,14 +65,15 @@
 						  data-close="new-organization">Cancel</span>
 				</div>
 			</div>
+			<div class="clear"></div>
 		</section>
 
 		<section>
-			<label>Projects</label>
+			<label><img src="../img/layers.svg" alt="Projects" class="icon"> Projects</label>
 			<div class="toggler" id="sentry-existing-projects">
 				<ul id="sentry-projects" class="removable-list">
 				</ul>
-				<div class="">
+				<div class="toggler-wrapper">
 					<span class="action action-flat toggler-button" data-open="new-project"
 						  data-close="sentry-existing-projects">Add New Project</span>
 				</div>
@@ -110,18 +98,18 @@
 		</section>
 
 		<section>
-			<label>Queries</label>
+			<label><img src="../img/file.svg" alt="Queries" class="icon"> Queries</label>
 			<div class="toggler" id="sentry-existing-queries">
 				<ul id="sentry-queries" class="removable-list">
 				</ul>
-				<div class="">
+				<div class="toggler-wrapper">
 					<span class="action action-flat toggler-button" data-open="new-query"
 						  data-close="sentry-existing-queries">Add New Query</span>
 				</div>
 			</div>
 			<div>
 				<div class="adder" id="new-query" style="display: none">
-					Add New Project
+					Add New Query
 					<section>
 						<label for="sentry-query-project">Organization/Project</label>
 						<select id="sentry-query-project"></select>
@@ -141,10 +129,10 @@
 
 </div>
 <footer>
-	Sentry Tower is <a href="#" target="_blank">open source</a>.
+	Sentry Tower is <a href="https://github.com/hvetko/sentry-tower" target="_blank">open source <img src="../img/github.svg" class="icon"></a>
 </footer>
 <script src="../js/jquery-3.2.1.min.js"></script>
 <script src="../js/query.model.js"></script>
-<script src="../js/options.js"></script>
+<script src="../js/settings.js"></script>
 </body>
 </html>
