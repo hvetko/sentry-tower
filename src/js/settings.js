@@ -23,34 +23,6 @@ function Settings() {
 	};
 
 	/**
-	 *
-	 *
-	 * @param {String} path1
-	 * @param {String} path2
-	 *
-	 * @returns {String}
-	 */
-	this.getPathJoin = function(path1, path2) {
-		if (path1.charAt(path1.length - 1) !== '/') {
-			path1 += '/';
-		}
-
-		if(!path2) {
-			return path1;
-		}
-
-		if (path2.charAt(0) === '/') {
-			path2 = path2.substring(1);
-		}
-
-		if (path2.charAt(path2.length - 1) !== '/') {
-			path2 += '/';
-		}
-
-		return path1 + path2;
-	};
-
-	/**
 	 * Restores option values
 	 */
 	this.restoreOptions = function () {
@@ -107,7 +79,6 @@ function Settings() {
 				}
 
 				organizations.push(newOrganizationName);
-
 				chrome.storage.local.set({sentryOrganizations: organizations});
 
 				self.addNewOrganizationToLists(newOrganizationName);
@@ -160,7 +131,6 @@ function Settings() {
 			});
 
 			chrome.storage.local.set({sentryOrganizations: organizations});
-
 			self.restoreOptions();
 		});
 	};
@@ -297,26 +267,21 @@ function Settings() {
 		}
 
 		var query = new Query(queryText);
-
 		var project = $('#sentry-query-project').val().trim();
 
-		// var queryApiUrl = sentryUrl + '/api/0/projects/' + project + '/issues/?query=' + encodeURIComponent(queryText).replace(/%20/g, '+');
 		var queryApiUrl = getPath([
 			sentryUrl,
 			'/api/0/projects/',
 			project,
-			'/issues/?query=',
-			encodeURIComponent(queryText).replace(/%20/g, '+')
+			'/issues/',
+			'?query=' + encodeURIComponent(queryText).replace(/%20/g, '+')
 		]);
-		// var queryUrl = sentryUrl + '/' + project + '/?query=' + encodeURIComponent(queryText).replace(/%20/g, '+');
+
 		var queryUrl = getPath([
 			sentryUrl,
 			project,
-			'/?query=' + encodeURIComponent(queryText).replace(/%20/g, '+')
+			'?query=' + encodeURIComponent(queryText).replace(/%20/g, '+')
 		]);
-
-					console.log(queryApiUrl);
-					console.log(queryUrl);
 
 		query.setProject(project);
 		query.setQueryApiUrl(queryApiUrl);
@@ -324,6 +289,7 @@ function Settings() {
 
 		chrome.storage.local.get(['sentryQueries'], function (items) {
 			var queries = {};
+
 			if (items.sentryQueries) {
 				queries = items.sentryQueries;
 			}
@@ -333,11 +299,9 @@ function Settings() {
 			}
 
 			queries[query.project][query.text] = query;
-
 			chrome.storage.local.set({sentryQueries: queries});
 
 			self.addNewQueryToLists(query);
-
 			self.showMessage('Query is saved.');
 			self.toggleDivs('sentry-existing-queries', 'new-query');
 
@@ -352,7 +316,7 @@ function Settings() {
 	 */
 	this.addNewQueryToLists = function (query) {
 		var self = this;
-		var queryTextHTML = '<span class="gray">[' + query.text + ']</span> ' + query.text + '</span>';
+		var queryTextHTML = '<span class="gray">[' + query.project + ']</span> ' + query.text + '</span>';
 
 		$('#sentry-queries').append(
 			$('<li>').append(

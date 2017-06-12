@@ -1,8 +1,9 @@
-h1{
+h1 {
 	padding: 50px 0;
 	font-weight: 100;
 	font-size: 300%;
 }
+
 h2 {
 	font-size: 150%;
 }
@@ -50,6 +51,10 @@ p {
 
 footer {
 	padding: 50px;
+}
+
+input::-webkit-input-placeholder {
+	color: #cccccc;
 }
 
 .action {
@@ -128,13 +133,4 @@ footer {
 	margin-left: 5px;
 	cursor: pointer;
 	border-radius: 5px;
-}
-
-.gray {
-	color: #999999;
-}
-
-.tiny {
-	font-size: 12px;
-	color: #999999;
 }

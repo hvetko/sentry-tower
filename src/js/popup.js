@@ -24,6 +24,14 @@ function Popup() {
 			}
 		});
 
+		var queryTextFormatted = query.text;
+		var queryFilters = /([A-Za-z]+:[A-Za-z]+)/g;
+		match = queryFilters.exec(query.text);
+		while (match !== null) {
+			queryTextFormatted = queryTextFormatted.replace(match[0], '<span class="gray slim">' + match[0] + '</span>');
+			match = queryFilters.exec(query.text);
+		}
+
 		watchlist.append(
 			$('<div>').attr('class', (unseenCount > 0) ? 'watchlist-row watchlist-row-unseen' : 'watchlist-row').append(
 				$('<div>').attr('class', 'watchlist-counts').append(
@@ -36,7 +44,7 @@ function Popup() {
 			).append(
 				$('<div>').attr('class', 'watchlist-query-details').append(
 					$('<div>').attr('class', 'watchlist-query').append(
-						$('<a>').attr('href', query.queryUrl).attr('target', '_blank').text(query.text)
+						$('<a>').attr('href', query.queryUrl).attr('target', '_blank').html(queryTextFormatted)
 					)
 				)
 			).append(
@@ -51,6 +59,10 @@ function Popup() {
 	 */
 	this.setWatchList = function () {
 		var self = this;
+
+		var manifestData = chrome.runtime.getManifest();
+		$('#version').text('v' + manifestData.version);
+
 		chrome.storage.local.get(['sentryQueries', 'isTowerRunning'], function (items) {
 			$('#is-running').prop('checked', items.isTowerRunning);
 
@@ -88,7 +100,7 @@ function Popup() {
 			chrome.storage.local.set({
 				isTowerRunning: !items.isTowerRunning
 			}, function () {
-				//TODO: trigger background run?
+				//TODO: trigger background run now
 			});
 		});
 	};

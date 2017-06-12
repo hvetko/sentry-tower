@@ -19,14 +19,12 @@ h3 {
 }
 
 .watchlist {
-	font-size: 75%;
+	font-size: 80%;
 	list-style: none;
 	margin-bottom: 10px;
 }
 
 .watchlist-row {
-	/*margin-bottom: 10px;*/
-	/*padding-left: 10px;*/
 	border-bottom: 1px solid #f7f7f7;
 	padding: 5px 5px 1px;
 }
@@ -40,10 +38,15 @@ h3 {
 	float: left;
 }
 
+.watchlist-query-details {
+	width: 80%;
+	float: left;
+}
+
 .watchlist-query a {
 	display: block;
 	padding: 4px 0;
-	font-size: 14px;
+	font-size: 100%;
 }
 
 .watchlist-query a:hover {

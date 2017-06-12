@@ -89,3 +89,15 @@ h1 {
 .link:hover .icon {
 	opacity: 0.8;
 }
+
+.gray {
+	color: #999999;
+}
+
+.slim {
+	font-weight: 400;
+}
+
+.tiny {
+	font-size: 25%;
+}
