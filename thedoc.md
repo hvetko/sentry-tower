@@ -6,11 +6,11 @@ It is expected that you already have access to Sentry instance that is up and ru
 
 ## Install
 
-Instal the latest stable version from [Google Chrome Web Store](https://www.google.com/).
+Install the latest stable version from [Google Chrome Web Store](https://www.google.com/).
 
 ## Setup
 
-Once Sentry Tower is installed in browser the settings page opens.
+Once Sentry Tower is installed, the settings page opens.
 In case that it needs to be opened again, click on the Sentry Tower icon in the Chrome icon bar and choose "Settings" from the bottom of popup.
 
 Initially, you'll need to set up *Sentry API Token* , *Sentry URL*, *Check Interval*, *Organizations* and *Projects*.
@@ -20,7 +20,7 @@ _For the purpose of this manual we'l use `https://sentry.example.com/production/
 
 ### Sentry API Token
 
-Set up and copy Sentry API auth token from your Sentry account.
+Set up and copy Sentry API auth token from your Sentry account. It's recommended to create _read-only_ token just for Sentry Tower.
 To access it, log in to Sentry, click your user avatar and then choose `API` from the menu.
 
 More info on [Sentry API Reference](https://docs.sentry.io/api/) page.
@@ -35,16 +35,18 @@ Number of seconds between Sentry Tower checks.
 
 ### Organizations
 
-Enter the Organization slug value. Slug value is the organization as seen in the URL, lowercase letters, without spaces.
+Enter the Organization *Short name* (slug). Short name value is the organization as seen in the URL, lowercase letters, without spaces.
 
 For our example it's `production`.
 
-If your organization's name is `API Staging`, then the organization slug is `api-staging`. Check the URL in your browser if not sure.
+If your organization's name is `API Staging`, then the organization short name is `api-staging`.
+
+Check the _Organization Settings_ page in Sentry or URL in your browser if not sure.
 
 ### Projects
 
-Choose the matching Organization from drop-down and enter the Project slug value.
-Similar as in Organizations, slug value is the organization as seen in the URL, lowercase letters, without spaces.
+Choose the matching Organization from drop-down and enter the Project short name (slug).
+Similar as in Organizations, project slug value is the organization as seen in the URL, lowercase letters, without spaces.
 
 For our example, Project name is `API Service` and slug value is `api-service`. Check the URL in your browser if not sure.
 

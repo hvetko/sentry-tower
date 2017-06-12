@@ -1,6 +1,6 @@
 # Sentry Tower
 
-Sentry Tower is open source extension for Google Chrome. It is meant to be addition for [Sentry](https://github.com/getsentry/sentry).
+Sentry Tower is open source extension for Google Chrome. It works as addition to [Sentry](https://sentry.io/welcome/).
 
 Save queries you'd like to track and Sentry Tower will show notification every time when any of saved queries has new error in Sentry.
 
