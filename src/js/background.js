@@ -3,11 +3,12 @@ function BackgroundHandler() {
 	/**
 	 * Run background tasks
 	 *
-	 * //TODO: Too big and too nested. Refactor.
+	 * //TODO: Too big and too nested. Refactor one day
 	 */
 	this.run = function () {
 		chrome.storage.local.get({
 			'isTowerRunning': false,
+			'sentryOptions': {},
 			'sentryQueries': [],
 			'alertedIds': []
 		}, function (items) {
@@ -25,8 +26,11 @@ function BackgroundHandler() {
 							data: {
 								format: 'json'
 							},
+							headers: {
+								"Authorization": "Bearer " + items.sentryOptions.sentryToken
+							},
 							error: function (responseData) {
-								self.processError(responseData);
+								console.error(responseData);
 							},
 							success: function (responseData) {
 								sentryQueries[project][text]['results'] = responseData;
