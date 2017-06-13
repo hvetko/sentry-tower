@@ -328,6 +328,13 @@ function Settings() {
 			));
 	};
 
+	this.addQueryAddon = function (element) {
+		var queryText = $('#sentry-query');
+		var newQuery = queryText.val() + ' ' + element.text();
+		queryText.val(newQuery.trim() + ' ');
+		queryText.focus();
+	};
+
 	/**
 	 * Deletes query from storage and list
 	 *
@@ -418,6 +425,10 @@ $('#new-project-save').click(function () {
 
 $('#new-query-save').click(function () {
 	settings.saveNewQuery();
+});
+
+$('.add-to-query').click(function () {
+	settings.addQueryAddon($(this));
 });
 
 $(document).ready(function () {

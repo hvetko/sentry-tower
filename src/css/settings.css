@@ -134,3 +134,12 @@ input::-webkit-input-placeholder {
 	cursor: pointer;
 	border-radius: 5px;
 }
+
+.query-addons {
+	font-size: 90%;
+	padding: 10px 0;
+}
+
+.add-to-query {
+	margin: 0 10px;
+}
