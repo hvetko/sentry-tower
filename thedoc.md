@@ -6,7 +6,7 @@ It is expected that you already have access to Sentry instance that is up and ru
 
 ## Install
 
-Install the latest stable version from [Google Chrome Web Store](https://www.google.com/).
+Install the latest stable version from [Google Chrome Web Store](https://chrome.google.com/webstore/detail/sentry-tower/ffdnegbkngfbbjehegalehmkbknmlkmj).
 
 ## Setup
 

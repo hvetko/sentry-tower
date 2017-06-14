@@ -93,9 +93,8 @@ $(document).ready(function () {
 	var background = new BackgroundHandler();
 
 	background.run();
-
-	chrome.storage.local.get(['sentryOptions'], function (results) {
-		if (results.sentryOptions.sentryCheckInterval) {
+	chrome.storage.local.get({'sentryOptions': {}}, function (results) {
+		if ('sentryCheckInterval' in results.sentryOptions) {
 			interval = results.sentryOptions.sentryCheckInterval;
 		}
 

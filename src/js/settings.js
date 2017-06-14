@@ -37,7 +37,16 @@ function Settings() {
 		var manifestData = chrome.runtime.getManifest();
 		$('#version').text('v' + manifestData.version);
 
-		chrome.storage.local.get(['sentryOptions', 'sentryProjects', 'sentryOrganizations', 'sentryQueries'], function (items) {
+		chrome.storage.local.get({
+			'sentryOptions': {
+				'sentryToken': null,
+				'sentryUrl': null,
+				'sentryCheckInterval': 60000
+			},
+			'sentryProjects': [],
+			'sentryOrganizations': [],
+			'sentryQueries': []
+		}, function (items) {
 			if (items.sentryOptions) {
 				$('#sentry-api-token').val(items.sentryOptions.sentryToken);
 				$('#sentry-url').val(items.sentryOptions.sentryUrl);
@@ -71,26 +80,25 @@ function Settings() {
 		var self = this;
 		var newOrganizationName = $('#sentry-organization').val().trim();
 
-		if (newOrganizationName) {
-			chrome.storage.local.get(['sentryOrganizations'], function (items) {
-				var organizations = [];
-				if (items.sentryOrganizations) {
-					organizations = items.sentryOrganizations;
-				}
-
-				organizations.push(newOrganizationName);
-				chrome.storage.local.set({sentryOrganizations: organizations});
-
-				self.addNewOrganizationToLists(newOrganizationName);
-				self.showMessage('Organization is saved.');
-				self.toggleDivs('sentry-existing-organizations', 'new-organization');
-
-				$('#sentry-organization').val('');
-			});
-
-		} else {
-			this.showMessage('ERROR: Organization name cannot be empty.');
+		if (!newOrganizationName) {
+			throw new Error("Organization name cannot be empty.");
 		}
+
+		chrome.storage.local.get(['sentryOrganizations'], function (items) {
+			var organizations = [];
+			if (items.sentryOrganizations) {
+				organizations = items.sentryOrganizations;
+			}
+
+			organizations.push(newOrganizationName);
+			chrome.storage.local.set({sentryOrganizations: organizations});
+
+			self.addNewOrganizationToLists(newOrganizationName);
+			self.showMessage('Organization is saved.');
+			self.toggleDivs('sentry-existing-organizations', 'new-organization');
+
+			$('#sentry-organization').val('');
+		});
 	};
 
 	/**
@@ -147,27 +155,27 @@ function Settings() {
 		var organizationName = $('#sentry-project-organization').val().trim();
 		var newProjectName = $('#sentry-project').val().trim();
 
-		if (newProjectName) {
-			newProjectName = organizationName + '/' + newProjectName;
-			chrome.storage.local.get(['sentryProjects'], function (items) {
-				var projects = [];
-				if (items.sentryProjects) {
-					projects = items.sentryProjects;
-				}
-
-				projects.push(newProjectName);
-
-				chrome.storage.local.set({sentryProjects: projects});
-
-				self.addNewProjectToLists(newProjectName);
-				self.showMessage('Project is saved.');
-				self.toggleDivs('sentry-existing-projects', 'new-project');
-
-				$('#sentry-project').val('');
-			});
-		} else {
-			this.showMessage('ERROR: Project name cannot be empty.');
+		if (!newProjectName) {
+			throw new Error("Project name cannot be empty.");
 		}
+
+		newProjectName = organizationName + '/' + newProjectName;
+		chrome.storage.local.get(['sentryProjects'], function (items) {
+			var projects = [];
+			if (items.sentryProjects) {
+				projects = items.sentryProjects;
+			}
+
+			projects.push(newProjectName);
+
+			chrome.storage.local.set({sentryProjects: projects});
+
+			self.addNewProjectToLists(newProjectName);
+			self.showMessage('Project is saved.');
+			self.toggleDivs('sentry-existing-projects', 'new-project');
+
+			$('#sentry-project').val('');
+		});
 	};
 
 	/**
@@ -239,7 +247,7 @@ function Settings() {
 					pathElement = pathElement.substring(1);
 				}
 
-				if ((i+1) !== paths.length && pathElement.charAt(pathElement.length - 1) !== '/') {
+				if ((i + 1) !== paths.length && pathElement.charAt(pathElement.length - 1) !== '/') {
 					pathElement += '/';
 				}
 
@@ -255,15 +263,11 @@ function Settings() {
 		var sentryUrl = $('#sentry-url').val();
 
 		if (!sentryUrl) {
-			// TODO: process error
-			// TODO: warning. prevent saving
-			this.showMessage('ERROR: Sentry URL cannot be empty.');
+			throw new Error("Sentry URL cannot be empty.");
 		}
 
 		if (!queryText) {
-			// TODO: process error
-			// TODO: warning. prevent saving
-			this.showMessage('ERROR: Query cannot be empty.');
+			throw new Error("Query cannot be empty.");
 		}
 
 		var query = new Query(queryText);
@@ -306,6 +310,9 @@ function Settings() {
 			self.toggleDivs('sentry-existing-queries', 'new-query');
 
 			$('#sentry-query').val('');
+
+			var background = new BackgroundHandler();
+			background.run();
 		});
 	};
 
@@ -330,7 +337,7 @@ function Settings() {
 
 	this.addQueryAddon = function (element) {
 		var queryText = $('#sentry-query');
-		var newQuery = queryText.val() + ' ' + element.text();
+		var newQuery = queryText.val().trim() + ' ' + element.text().trim();
 		queryText.val(newQuery.trim() + ' ');
 		queryText.focus();
 	};
@@ -416,15 +423,30 @@ $('#save').click(function () {
 });
 
 $('#new-organization-save').click(function () {
-	settings.saveNewOrganization();
+	try {
+		settings.saveNewOrganization();
+	} catch (error) {
+		settings.showMessage('ERROR: ' + error);
+		console.error(error);
+	}
 });
 
 $('#new-project-save').click(function () {
-	settings.saveNewProject();
+	try {
+		settings.saveNewProject();
+	} catch (error) {
+		settings.showMessage('ERROR: ' + error);
+		console.error(error);
+	}
 });
 
 $('#new-query-save').click(function () {
-	settings.saveNewQuery();
+	try {
+		settings.saveNewQuery();
+	} catch (error) {
+		settings.showMessage('ERROR: ' + error);
+		console.error(error);
+	}
 });
 
 $('.add-to-query').click(function () {

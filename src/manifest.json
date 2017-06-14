@@ -10,7 +10,7 @@
 		"default_popup": "html/popup.html",
 		"default_title": "Sentry Tower"
 	},
-	"description": "Active monitor for Sentry error logs. Define the queries you'd like to monitor and notification will appear every time new error is logged.",
+	"description": "Active monitor for Sentry error logs. Define the queries you'd like to monitor and notification will appear for new errors.",
 	"icons": {
 		"16": "img/tower.png",
 		"48": "img/tower.png",
@@ -21,9 +21,7 @@
 	"options_page": "html/settings.html",
 	"permissions": [
 		"storage",
-		"notifications",
-		"http://*/*",
-		"https://*/*"
+		"notifications"
 	],
-	"version": "1.0.0"
+	"version": "0.0.4"
 }

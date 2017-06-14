@@ -100,7 +100,8 @@ function Popup() {
 			chrome.storage.local.set({
 				isTowerRunning: !items.isTowerRunning
 			}, function () {
-				//TODO: trigger background run now
+				var background = new BackgroundHandler();
+				background.run();
 			});
 		});
 	};

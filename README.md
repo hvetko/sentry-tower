@@ -8,7 +8,9 @@ In case you missed out the notification, error counts are displayed in the icon 
 
 ## Install
 
-Install and set up instructions can be found in [The Doc](instructions.md).
+Install extension from [Google Chrome Web Store](https://chrome.google.com/webstore/detail/sentry-tower/ffdnegbkngfbbjehegalehmkbknmlkmj).
+
+Set up instructions can be found in [The Doc](instructions.md).
 
 ## Usage - Image is Worth a Thousand Words
 
