@@ -378,7 +378,12 @@ function Settings() {
 	 *************************************************/
 
 	this.showDiv = function (id) {
-		$('#' + id).show('slide');
+		var element = $('#' + id);
+		element.show('slide');
+		var input = element.find('input');
+		if (input.hasClass('text-input')) {
+			input.focus();
+		}
 	};
 
 	this.hideDiv = function (id) {
@@ -397,7 +402,23 @@ function Settings() {
 		setTimeout(function () {
 			self.hideDiv('update-msg');
 		}, 3000);
-	}
+	};
+
+	this.saveInput = function (element) {
+		try {
+			if (element === 'sentry-organization') {
+				this.saveNewOrganization();
+			} else if (element === 'sentry-project') {
+				this.saveNewProject();
+			} else if (element === 'sentry-query') {
+				this.saveNewQuery();
+			}
+		} catch (error) {
+			this.showMessage('ERROR: ' + error);
+			console.error(error);
+		}
+		return false;
+	};
 }
 
 var settings = new Settings();
@@ -418,39 +439,31 @@ $('.closer').click(function () {
 	settings.hideDiv(id);
 });
 
-$('#save').click(function () {
+$('#options-save').click(function () {
 	settings.saveOptions();
 });
 
 $('#new-organization-save').click(function () {
-	try {
-		settings.saveNewOrganization();
-	} catch (error) {
-		settings.showMessage('ERROR: ' + error);
-		console.error(error);
-	}
+	settings.saveInput('sentry-organization');
 });
 
 $('#new-project-save').click(function () {
-	try {
-		settings.saveNewProject();
-	} catch (error) {
-		settings.showMessage('ERROR: ' + error);
-		console.error(error);
-	}
+	settings.saveInput('sentry-project');
 });
 
 $('#new-query-save').click(function () {
-	try {
-		settings.saveNewQuery();
-	} catch (error) {
-		settings.showMessage('ERROR: ' + error);
-		console.error(error);
-	}
+	settings.saveInput('sentry-query');
 });
 
 $('.add-to-query').click(function () {
 	settings.addQueryAddon($(this));
+});
+
+$('.text-input').keypress(function (e) {
+	if (e.which === 13) {
+		settings.saveInput($(this).attr('id'));
+		return false;
+	}
 });
 
 $(document).ready(function () {

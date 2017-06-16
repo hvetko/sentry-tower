@@ -16,7 +16,8 @@
 
 	<div class="options-divider">
 		<p>Instructions on how to set up Sentry Tower can be found on
-			<a href="https://github.com/hvetko/sentry-tower/blob/master/instructions.md" target="_blank" class="super-link">Sentry Tower GitHub</a> page.</p>
+			<a href="https://github.com/hvetko/sentry-tower/blob/master/instructions.md" target="_blank"
+			   class="super-link">Sentry Tower GitHub</a> page.</p>
 	</div>
 
 	<div class="options-divider">
@@ -36,7 +37,7 @@
 			<input type="number" id="sentry-check-interval" placeholder="Check interval (seconds)"/>
 		</section>
 
-		<button id="save" class="action action-raised action-big">Save</button>
+		<button id="options-save" class="action action-raised action-big">Save</button>
 	</div>
 
 	<div class="options-divider">
@@ -57,7 +58,7 @@
 					Add New Organization
 					<section>
 						<label for="sentry-organization">Organization URl shortcode</label>
-						<input type="text" id="sentry-organization"/>
+						<input type="text" id="sentry-organization" class="text-input"/>
 					</section>
 					<span class="action action-raised" data-related="new-organization"
 						  id="new-organization-save">Save</span>
@@ -88,7 +89,7 @@
 
 					<section>
 						<label for="sentry-project">Project URl shortcode</label>
-						<input type="text" id="sentry-project"/>
+						<input type="text" id="sentry-project" class="text-input"/>
 					</section>
 					<span class="action action-raised" data-related="new-project" id="new-project-save">Save</span>
 					<span class="action action-flat toggler-button" data-open="sentry-existing-projects"
@@ -117,7 +118,8 @@
 
 					<section>
 						<label for="sentry-query">Query</label>
-						<input type="text" id="sentry-query" placeholder="Add full query here. Example: is:unresolved search_string" />
+						<input type="text" id="sentry-query" class="text-input"
+							   placeholder="Add full query here. Example: is:unresolved search_string"/>
 						<div class="query-addons">
 							<span class="add-to-query link"><img src="../img/plus-circle.svg" class="icon"> is:unresolved</span>
 							<span class="add-to-query link"><img src="../img/plus-circle.svg" class="icon"> assigned:me</span>
@@ -133,7 +135,8 @@
 	</div>
 </div>
 <footer>
-	Sentry Tower is <a href="https://github.com/hvetko/sentry-tower" target="_blank">open source <img src="../img/github.svg" class="icon"></a>
+	Sentry Tower is <a href="https://github.com/hvetko/sentry-tower" target="_blank">open source <img
+		src="../img/github.svg" class="icon"></a>
 </footer>
 <script src="../js/jquery-3.2.1.min.js"></script>
 <script src="../js/query.model.js"></script>

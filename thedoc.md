@@ -16,7 +16,7 @@ In case that it needs to be opened again, click on the Sentry Tower icon in the 
 Initially, you'll need to set up *Sentry API Token* , *Sentry URL*, *Check Interval*, *Organizations* and *Projects*.
 Then you can start adding *Queries* when needed.
 
-_For the purpose of this manual we'l use `https://sentry.example.com/production/api-service/` URL as example._
+_For the purpose of this manual we'll use `https://sentry.example.com/production/api-service/` URL as example._
 
 ### Sentry API Token
 
