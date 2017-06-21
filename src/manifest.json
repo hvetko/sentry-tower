@@ -6,15 +6,14 @@
 		]
 	},
 	"browser_action": {
-		"default_icon": "img/tower-off.png",
+		"default_icon": "img/sentry-tower-off.png",
 		"default_popup": "html/popup.html",
 		"default_title": "Sentry Tower"
 	},
 	"description": "Active monitor for Sentry error logs. Define the queries you'd like to monitor and notification will appear for new errors.",
 	"icons": {
-		"16": "img/tower.png",
-		"48": "img/tower.png",
-		"128": "img/tower.png"
+		"48": "img/sentry-tower-48.png",
+		"128": "img/sentry-tower.png"
 	},
 	"manifest_version": 2,
 	"name": "Sentry Tower",
@@ -23,5 +22,5 @@
 		"storage",
 		"notifications"
 	],
-	"version": "0.0.6"
+	"version": "1.0.0"
 }

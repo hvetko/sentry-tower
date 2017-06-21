@@ -13,7 +13,7 @@ function BackgroundHandler() {
 			'alertedIds': []
 		}, function (items) {
 			if (items.isTowerRunning) {
-				chrome.browserAction.setIcon({path: '../img/tower.png'});
+				chrome.browserAction.setIcon({path: '../img/sentry-tower.png'});
 
 				var sentryQueries = items.sentryQueries;
 				var unreadCount = 0;
@@ -64,7 +64,7 @@ function BackgroundHandler() {
 								if (showNotification) {
 									chrome.notifications.create({
 										type: 'basic',
-										iconUrl: '../img/tower.png',
+										iconUrl: '../img/sentry-tower.png',
 										title: 'Sentry Tower Alert!',
 										message: notificationMessage
 									});
@@ -81,7 +81,7 @@ function BackgroundHandler() {
 
 			} else {
 				chrome.browserAction.setBadgeText({text: ''});
-				chrome.browserAction.setIcon({path: '../img/tower-off.png'});
+				chrome.browserAction.setIcon({path: '../img/sentry-tower-off.png'});
 			}
 		});
 	};
